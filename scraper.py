@@ -1,8 +1,9 @@
 from datetime import datetime
 import json
 import os
-import cloudscraper
+import re
 from bs4 import BeautifulSoup
+import cloudscraper
 
 URLS = {
     "Are You The One": "https://scnlog.me/?s=are%20you%20the%20one%20reality",
@@ -16,7 +17,6 @@ URLS = {
 
 MAX_ITEMS = 5
 DATA_FILE = "data.json"
-TODAY_DATE = datetime.now().strftime("%Y-%m-%d")
 
 old_data = {}
 if os.path.exists(DATA_FILE):
@@ -28,6 +28,21 @@ if os.path.exists(DATA_FILE):
 
 scraper = cloudscraper.create_scraper()
 all_data = {}
+
+months_pattern = r"(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:st|nd|rd|th)?,\s+\d{4}"
+time_pattern = r"\d{2}:\d{2}"
+
+
+def parse_scnlog_datetime(date_str, time_str):
+  try:
+    # Entfernt Endungen wie 'st', 'nd', 'rd', 'th' (z.B. "22nd" -> "22")
+    clean_date = re.sub(r"(\d+)(st|nd|rd|th)", r"\1", date_str)
+    full_str = f"{clean_date} {time_str}"
+    dt = datetime.strptime(full_str.strip(), "%B %d, %Y %H:%M")
+    return dt.strftime("%Y-%m-%d %H:%M")
+  except Exception:
+    return datetime.now().strftime("%Y-%m-%d %H:%M")
+
 
 for category, url in URLS.items():
   try:
@@ -57,15 +72,25 @@ for category, url in URLS.items():
         if link.startswith("/"):
           link = "https://scnlog.me" + link
 
-        existing_date = TODAY_DATE
-        for old_item in old_data.get(category, []):
-          if old_item["link"] == link:
-            existing_date = old_item.get("date", TODAY_DATE)
-            break
+        # Container / Zeile des Eintrags finden, um Datum & Uhrzeit auszulesen
+        container = a.find_parent("div")
+        container_text = container.get_text() if container else ""
+
+        date_match = re.search(months_pattern, container_text)
+        time_match = re.search(time_pattern, container_text)
+
+        date_str = date_match.group(0) if date_match else ""
+        time_str = time_match.group(0) if time_match else "00:00"
+
+        item_datetime = (
+            parse_scnlog_datetime(date_str, time_str)
+            if date_str
+            else datetime.now().strftime("%Y-%m-%d %H:%M")
+        )
 
         if not any(item["link"] == link for item in items):
           items.append(
-              {"title": title, "link": link, "date": existing_date}
+              {"title": title, "link": link, "datetime": item_datetime}
           )
 
       if len(items) >= MAX_ITEMS:
