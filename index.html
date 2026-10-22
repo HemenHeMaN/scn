@@ -9,10 +9,32 @@
         h1 { text-align: center; color: #444; }
         .category { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .category h2 { margin-top: 0; color: #0066cc; border-bottom: 2px solid #eee; padding-bottom: 8px; }
-        ul { padding-left: 20px; }
-        li { margin-bottom: 10px; }
-        a { color: #0056b3; text-decoration: none; }
+        ul { padding-left: 0; list-style: none; }
+        li { 
+            margin-bottom: 12px; 
+            padding: 10px; 
+            border-radius: 6px; 
+            background: #fafafa; 
+            border: 1px solid #eee;
+            transition: background 0.2s;
+        }
+        li.is-today {
+            background: #fff9db; /* Sanftes Gelb für heutige Einträge */
+            border-color: #ffe066;
+        }
+        a { color: #0056b3; text-decoration: none; font-weight: 500; }
         a:hover { text-decoration: underline; }
+        .badge-new {
+            background: #ff6b6b;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 8px;
+            text-transform: uppercase;
+        }
+        .error { color: red; background: #ffe6e6; padding: 10px; border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -21,8 +43,14 @@
     <div id="content">Lade Daten...</div>
 
     <script>
-        fetch('data.json')
-            .then(response => response.json())
+        // Heutiges Datum im Format YYYY-MM-DD ermitteln
+        const todayStr = new Date().toISOString().split('T')[0];
+
+        fetch('data.json?t=' + new Date().getTime())
+            .then(response => {
+                if (!response.ok) throw new Error('HTTP-Fehler! Status: ' + response.status);
+                return response.json();
+            })
             .then(data => {
                 const container = document.getElementById('content');
                 container.innerHTML = '';
@@ -35,7 +63,14 @@
                     if (items && items.length > 0) {
                         html += '<ul>';
                         items.forEach(item => {
-                            html += `<li><a href="${item.link}" target="_blank">${item.title}</a></li>`;
+                            // Prüfen ob der Eintrag von heute ist
+                            const isToday = item.date === todayStr;
+                            const liClass = isToday ? 'is-today' : '';
+                            const badge = isToday ? '<span class="badge-new">Neu</span>' : '';
+
+                            html += `<li class="${liClass}">
+                                ${badge}<a href="${item.link}" target="_blank">${item.title}</a>
+                            </li>`;
                         });
                         html += '</ul>';
                     } else {
@@ -47,7 +82,7 @@
                 }
             })
             .catch(error => {
-                document.getElementById('content').innerHTML = '<p>Fehler beim Laden der Daten.</p>';
+                document.getElementById('content').innerHTML = `<div class="error">Fehler beim Laden der data.json: ${error.message}</div>`;
                 console.error('Fehler:', error);
             });
     </script>
