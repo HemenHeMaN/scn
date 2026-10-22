@@ -29,8 +29,9 @@ if os.path.exists(DATA_FILE):
 scraper = cloudscraper.create_scraper()
 all_data = {}
 
+# Sucht nach Mustern wie "October 22nd, 2026"
 months_pattern = r"(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:st|nd|rd|th)?,\s+\d{4}"
-time_pattern = r"\d{2}:\d{2}"
+time_pattern = r"\b\d{1,2}:\d{2}\b"
 
 
 def parse_scnlog_datetime(date_str, time_str):
@@ -40,8 +41,9 @@ def parse_scnlog_datetime(date_str, time_str):
     full_str = f"{clean_date} {time_str}"
     dt = datetime.strptime(full_str.strip(), "%B %d, %Y %H:%M")
     return dt.strftime("%Y-%m-%d %H:%M")
-  except Exception:
-    return datetime.now().strftime("%Y-%m-%d %H:%M")
+  except Exception as e:
+    print(f"Datums-Fehler beim Parsen ('{date_str} {time_str}'): {e}")
+    return ""
 
 
 for category, url in URLS.items():
@@ -59,7 +61,7 @@ for category, url in URLS.items():
       title = a.get_text(strip=True)
       link = a["href"]
 
-      if not title or "German" in title and len(title) < 15:
+      if not title or ("German" in title and len(title) < 15):
         continue
       if not link or "scnlog.me" not in link:
         continue
@@ -72,21 +74,27 @@ for category, url in URLS.items():
         if link.startswith("/"):
           link = "https://scnlog.me" + link
 
-        # Container / Zeile des Eintrags finden, um Datum & Uhrzeit auszulesen
-        container = a.find_parent("div")
-        container_text = container.get_text() if container else ""
+        # Eintrags-Container nach oben hin suchen
+        row_container = a
+        for _ in range(5):
+          if row_container.parent:
+            row_container = row_container.parent
+            text_block = row_container.get_text(separator=" ")
+            if re.search(months_pattern, text_block):
+              break
 
-        date_match = re.search(months_pattern, container_text)
-        time_match = re.search(time_pattern, container_text)
+        text_block = row_container.get_text(separator=" ")
+
+        date_match = re.search(months_pattern, text_block)
+        time_match = re.search(time_pattern, text_block)
 
         date_str = date_match.group(0) if date_match else ""
         time_str = time_match.group(0) if time_match else "00:00"
 
-        item_datetime = (
-            parse_scnlog_datetime(date_str, time_str)
-            if date_str
-            else datetime.now().strftime("%Y-%m-%d %H:%M")
-        )
+        item_datetime = parse_scnlog_datetime(date_str, time_str)
+
+        if not item_datetime:
+          item_datetime = datetime.now().strftime("%Y-%m-%d %H:%M")
 
         if not any(item["link"] == link for item in items):
           items.append(
