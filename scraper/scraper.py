@@ -13,9 +13,8 @@ URLS = {
     "Sommerhaus": "https://scnlog.me/?s=Sommerhaus",
 }
 
-# Cloudscraper umgeht gängige Bot-Schutzmauern (wie Cloudflare)
+# Cloudscraper umgeht Bot-Sperren / Cloudflare
 scraper = cloudscraper.create_scraper()
-
 all_data = {}
 
 for category, url in URLS.items():
@@ -25,15 +24,11 @@ for category, url in URLS.items():
       soup = BeautifulSoup(response.text, "html.parser")
       items = []
 
-      # Universellerer Selektor, der meistens greift (sucht alle Links innerhalb von Beiträgen)
-      # Wir durchsuchen gängige WordPress-Klassen oder Artikel-Links
       for post in soup.select("h2 a, h3 a, .entry-title a")[:15]:
         title = post.get_text(strip=True)
         link = post.get("href")
 
-        # Filtern von unnötigen Links (z.B. Kategorien oder Seiten-Navigation)
         if title and link and "scnlog.me" in link and "?" not in title:
-          # Duplikate vermeiden
           if not any(item["link"] == link for item in items):
             items.append({"title": title, "link": link})
 
@@ -42,13 +37,12 @@ for category, url in URLS.items():
 
       all_data[category] = items
     else:
-      print(f"Fehler bei {category}: HTTP Status {response.status_code}")
+      print(f"Fehler bei {category}: HTTP {response.status_code}")
       all_data[category] = []
   except Exception as e:
     print(f"Fehler bei {category}: {e}")
     all_data[category] = []
 
-# Speichern als JSON
 os.makedirs(".", exist_ok=True)
 with open("data.json", "w", encoding="utf-8") as f:
   json.dump(all_data, f, ensure_ascii=False, indent=4)
