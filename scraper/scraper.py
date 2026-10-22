@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
+import cloudscraper
 import json
 import os
-import requests
 
 URLS = {
     "Are You The One": "https://scnlog.me/?s=are%20you%20the%20one%20reality",
@@ -13,37 +13,42 @@ URLS = {
     "Sommerhaus": "https://scnlog.me/?s=Sommerhaus",
 }
 
-headers = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,"
-        " like Gecko) Chrome/115.0.0.0 Safari/537.36"
-    )
-}
+# Cloudscraper umgeht gängige Bot-Schutzmauern (wie Cloudflare)
+scraper = cloudscraper.create_scraper()
 
 all_data = {}
 
 for category, url in URLS.items():
   try:
-    response = requests.get(url, headers=headers, timeout=10)
+    response = scraper.get(url, timeout=15)
     if response.status_code == 200:
       soup = BeautifulSoup(response.text, "html.parser")
       items = []
 
-      # Passe den Selektor an die Struktur von scnlog.me an (meistens h2 a oder h3 a für Beiträge)
-      for post in soup.select("h2.title a, h3.entry-title a, h2 a")[:5]:
+      # Universellerer Selektor, der meistens greift (sucht alle Links innerhalb von Beiträgen)
+      # Wir durchsuchen gängige WordPress-Klassen oder Artikel-Links
+      for post in soup.select("h2 a, h3 a, .entry-title a")[:15]:
         title = post.get_text(strip=True)
         link = post.get("href")
-        if title and link:
-          items.append({"title": title, "link": link})
+
+        # Filtern von unnötigen Links (z.B. Kategorien oder Seiten-Navigation)
+        if title and link and "scnlog.me" in link and "?" not in title:
+          # Duplikate vermeiden
+          if not any(item["link"] == link for item in items):
+            items.append({"title": title, "link": link})
+
+        if len(items) >= 5:
+          break
 
       all_data[category] = items
     else:
+      print(f"Fehler bei {category}: HTTP Status {response.status_code}")
       all_data[category] = []
   except Exception as e:
     print(f"Fehler bei {category}: {e}")
     all_data[category] = []
 
-# Speichern als JSON für das Frontend
+# Speichern als JSON
 os.makedirs(".", exist_ok=True)
 with open("data.json", "w", encoding="utf-8") as f:
   json.dump(all_data, f, ensure_ascii=False, indent=4)
