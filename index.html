@@ -18,8 +18,8 @@
             border: 1px solid #eee;
             transition: background 0.2s;
         }
-        li.is-today {
-            background: #fff9db; /* Sanftes Gelb für heutige Einträge */
+        li.is-new {
+            background: #fff9db; /* Sanftes Gelb für heute & gestern */
             border-color: #ffe066;
         }
         a { color: #0056b3; text-decoration: none; font-weight: 500; }
@@ -43,9 +43,6 @@
     <div id="content">Lade Daten...</div>
 
     <script>
-        // Heutiges Datum im Format YYYY-MM-DD ermitteln
-        const todayStr = new Date().toISOString().split('T')[0];
-
         fetch('data.json?t=' + new Date().getTime())
             .then(response => {
                 if (!response.ok) throw new Error('HTTP-Fehler! Status: ' + response.status);
@@ -55,6 +52,10 @@
                 const container = document.getElementById('content');
                 container.innerHTML = '';
 
+                // Heutiges Datum (ohne Uhrzeit für den reinen Tagesvergleich)
+                const now = new Date();
+                now.setHours(0, 0, 0, 0);
+
                 for (const [category, items] of Object.entries(data)) {
                     const div = document.createElement('div');
                     div.className = 'category';
@@ -63,10 +64,24 @@
                     if (items && items.length > 0) {
                         html += '<ul>';
                         items.forEach(item => {
-                            // Prüfen ob der Eintrag von heute ist
-                            const isToday = item.date === todayStr;
-                            const liClass = isToday ? 'is-today' : '';
-                            const badge = isToday ? '<span class="badge-new">Neu</span>' : '';
+                            let isNew = false;
+                            
+                            if (item.date) {
+                                const itemDate = new Date(item.date);
+                                itemDate.setHours(0, 0, 0, 0);
+                                
+                                // Differenz in Tagen berechnen
+                                const diffTime = now - itemDate;
+                                const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+                                
+                                // Wenn 0 Tage (heute) oder 1 Tag (gestern) alt
+                                if (diffDays >= 0 && diffDays <= 1) {
+                                    isNew = true;
+                                }
+                            }
+
+                            const liClass = isNew ? 'is-new' : '';
+                            const badge = isNew ? '<span class="badge-new">Neu</span>' : '';
 
                             html += `<li class="${liClass}">
                                 ${badge}<a href="${item.link}" target="_blank">${item.title}</a>
