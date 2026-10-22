@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reality Show Updates</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; background: #f4f4f9; color: #333; }
+        h1 { text-align: center; color: #444; }
+        .category { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .category h2 { margin-top: 0; color: #0066cc; border-bottom: 2px solid #eee; padding-bottom: 8px; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 10px; }
+        a { color: #0056b3; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <h1>Reality TV Release Index</h1>
+    <div id="content">Lade Daten...</div>
+
+    <script>
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('content');
+                container.innerHTML = '';
+
+                for (const [category, items] of Object.entries(data)) {
+                    const div = document.createElement('div');
+                    div.className = 'category';
+                    
+                    let html = `<h2>${category}</h2>`;
+                    if (items.length > 0) {
+                        html += '<ul>';
+                        items.forEach(item => {
+                            html += `<li><a href="${item.link}" target="_blank">${item.title}</a></li>`;
+                        });
+                        html += '</ul>';
+                    } else {
+                        html += '<p>Keine Einträge gefunden.</p>';
+                    }
+                    
+                    div.innerHTML = html;
+                    container.appendChild(div);
+                }
+            })
+            .catch(error => {
+                document.getElementById('content').innerHTML = '<p>Fehler beim Laden der Daten.</p>';
+                console.error('Fehler:', error);
+            });
+    </script>
+
+</body>
+</html>
