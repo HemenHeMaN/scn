@@ -16,7 +16,7 @@ URLS = {
 
 MAX_ITEMS = 5
 DATA_FILE = "data.json"
-TODAY_DATE = datetime.now().strftime("%Y-%m-%d")  # Heutiges Datum (z.B. "2026-10-23")
+TODAY_DATE = datetime.now().strftime("%Y-%m-%d")
 
 old_data = {}
 if os.path.exists(DATA_FILE):
@@ -57,7 +57,6 @@ for category, url in URLS.items():
         if link.startswith("/"):
           link = "https://scnlog.me" + link
 
-        # Prüfen, ob der Eintrag bereits in den alten Daten existiert (um das ursprüngliche Datum beizubehalten)
         existing_date = TODAY_DATE
         for old_item in old_data.get(category, []):
           if old_item["link"] == link:
