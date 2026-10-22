@@ -1,0 +1,36 @@
+name: Stündlicher Scraper
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Läuft zu jeder vollen Stunde
+  workflow_dispatch:      # Ermöglicht manuelles Starten im GitHub-Tab
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Abhängigkeiten installieren
+        run: |
+          pip install requests beautifulsoup4
+
+      - name: Scraper ausführen
+        run: python scraper/scraper.py
+
+      - name: Änderungen committen und pushen
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add data.json
+          git commit -m "Auto-Update der Scraper-Daten [skip ci]" || exit 0
+          git push
