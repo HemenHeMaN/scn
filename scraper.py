@@ -1,6 +1,5 @@
 import json
 import os
-
 import cloudscraper
 from bs4 import BeautifulSoup
 
@@ -9,13 +8,13 @@ URLS = {
     "Love Island VIP": "https://scnlog.me/?s=Love%20island%20vip%20german",
     "CoupleChallenge": "https://scnlog.me/?s=Couplechallenge",
     "Temptation Island VIP": "https://scnlog.me/?s=Temptation%20island%20vip%20german",
-    "Sommerhaus": "https://scnlog.me/?s=Sommerhaus",
+    "Sommerhaus": "https://scnlog.me/?s=Sommerhaus"
 }
 
 MAX_ITEMS = 5
-DATA_FILE = "data.json"
+DATA_FILE = "data.json"  # Liegt direkt im selben Ordner
 
-# Alte Daten laden, damit bei Fehlern nichts verloren geht
+# Alte Daten laden, damit bei einem Fehler nichts überschrieben wird
 old_data = {}
 if os.path.exists(DATA_FILE):
     try:
@@ -54,17 +53,15 @@ for category, url in URLS.items():
         if items:
             all_data[category] = items
         else:
-            # Nichts gefunden (z.B. Seite geblockt) -> alte Einträge behalten
-            print(f"Keine Einträge bei {category}, behalte alte Daten.")
+            print(f"Keine Einträge bei {category} gefunden, behalte alte Daten.")
             all_data[category] = old_data.get(category, [])
 
     except Exception as e:
         print(f"Fehler bei {category}: {e}")
         all_data[category] = old_data.get(category, [])
 
-if all_data != old_data:
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
-        json.dump(all_data, f, ensure_ascii=False, indent=4)
-    print("Neue Einträge gefunden, data.json aktualisiert.")
-else:
-    print("Keine Änderungen.")
+# Speichern der data.json im Hauptverzeichnis
+with open(DATA_FILE, "w", encoding="utf-8") as f:
+    json.dump(all_data, f, ensure_ascii=False, indent=4)
+
+print("Scraping beendet und data.json aktualisiert.")
