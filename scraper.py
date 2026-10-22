@@ -12,7 +12,7 @@ URLS = {
 }
 
 MAX_ITEMS = 5
-DATA_FILE = "data.json"  # Liegt direkt im selben Ordner
+DATA_FILE = "data.json"
 
 # Alte Daten laden, damit bei einem Fehler nichts überschrieben wird
 old_data = {}
@@ -37,21 +37,31 @@ for category, url in URLS.items():
         soup = BeautifulSoup(response.text, "html.parser")
         items = []
 
-        for post in soup.select("h2 a, h3 a, .entry-title a"):
-            title = post.get_text(strip=True)
-            link = post.get("href")
+        # Durchsuche alle Links nach typischen Release-Namen (enthalten Punkte und oft 'GERMAN' oder S01-S99)
+        for a in soup.find_all("a", href=True):
+            title = a.get_text(strip=True)
+            link = a["href"]
 
-            if not title or not link or "scnlog.me" not in link:
-                continue
-            if any(item["link"] == link for item in items):
-                continue
+            # Filter für gültige Release-Einträge im neuen Design
+            if title and len(title) > 10 and "." in title:
+                # Prüfen, ob es ein Link zum Beitrag ist (enthält meistens Bindestriche oder S01E01 etc.)
+                if "GERMAN" in title.upper() or "S0" in title.upper() or "STAFFEL" in title.upper():
+                    # Absolute URL erzeugen, falls relativ
+                    if link.startswith("/"):
+                        link = "https://scnlog.me" + link
+                    elif not link.startswith("http"):
+                        continue
 
-            items.append({"title": title, "link": link})
-            if len(items) >= MAX_ITEMS:
-                break
+                    # Duplikate in dieser Kategorie vermeiden
+                    if not any(item["link"] == link for item in items):
+                        items.append({"title": title, "link": link})
+                
+                if len(items) >= MAX_ITEMS:
+                    break
 
         if items:
             all_data[category] = items
+            print(f"{category}: {len(items)} Einträge gefunden.")
         else:
             print(f"Keine Einträge bei {category} gefunden, behalte alte Daten.")
             all_data[category] = old_data.get(category, [])
