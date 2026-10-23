@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import os
 import re
@@ -29,22 +29,23 @@ if os.path.exists(DATA_FILE):
 scraper = cloudscraper.create_scraper()
 all_data = {}
 
-# Sucht nach Mustern wie "October 22nd, 2026"
 months_pattern = r"(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:st|nd|rd|th)?,\s+\d{4}"
 time_pattern = r"\b\d{1,2}:\d{2}\b"
 
 
 def parse_scnlog_datetime(date_str, time_str):
   try:
-    # Entfernt Endungen wie 'st', 'nd', 'rd', 'th' (z.B. "22nd" -> "22")
     clean_date = re.sub(r"(\d+)(st|nd|rd|th)", r"\1", date_str)
     full_str = f"{clean_date} {time_str}"
     dt = datetime.strptime(full_str.strip(), "%B %d, %Y %H:%M")
-    return dt.strftime("%Y-%m-%d %H:%M")
-  except Exception as e:
-    print(f"Datums-Fehler beim Parsen ('{date_str} {time_str}'): {e}")
-    return ""
+    return dt
+  except Exception:
+    return None
 
+
+# Datum vor genau 2 Tagen berechnen (alles was älter ist, fliegt raus)
+cutoff_date = datetime.now() - timedelta(days=2)
+cutoff_date = cutoff_date.replace(hour=0, minute=0, second=0, microsecond=0)
 
 for category, url in URLS.items():
   try:
@@ -74,7 +75,6 @@ for category, url in URLS.items():
         if link.startswith("/"):
           link = "https://scnlog.me" + link
 
-        # Eintrags-Container nach oben hin suchen
         row_container = a
         for _ in range(5):
           if row_container.parent:
@@ -84,30 +84,35 @@ for category, url in URLS.items():
               break
 
         text_block = row_container.get_text(separator=" ")
-
         date_match = re.search(months_pattern, text_block)
         time_match = re.search(time_pattern, text_block)
 
         date_str = date_match.group(0) if date_match else ""
         time_str = time_match.group(0) if time_match else "00:00"
 
-        item_datetime = parse_scnlog_datetime(date_str, time_str)
+        dt = parse_scnlog_datetime(date_str, time_str)
 
-        if not item_datetime:
-          item_datetime = datetime.now().strftime("%Y-%m-%d %H:%M")
+        # Wenn kein Datum gefunden wurde oder der Eintrag älter als 2 Tage ist, überspringen
+        if dt and dt < cutoff_date:
+          continue
+
+        item_datetime_str = (
+            dt.strftime("%Y-%m-%d %H:%M")
+            if dt
+            else datetime.now().strftime("%Y-%m-%d %H:%M")
+        )
 
         if not any(item["link"] == link for item in items):
           items.append(
-              {"title": title, "link": link, "datetime": item_datetime}
+              {"title": title, "link": link, "datetime": item_datetime_str}
           )
 
       if len(items) >= MAX_ITEMS:
         break
 
-    if items:
-      all_data[category] = items
-    else:
-      all_data[category] = old_data.get(category, [])
+    # Falls durch den Filter gar nichts mehr übrig bleibt (weil z.B. länger nichts kam),
+    # behalten wir die Liste oder lassen sie leer. Hier nehmen wir die gefilterten Items.
+    all_data[category] = items
 
   except Exception as e:
     print(f"Fehler bei {category}: {e}")
