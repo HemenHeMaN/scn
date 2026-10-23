@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import json
 import os
 import re
@@ -11,6 +11,7 @@ URLS = {
     "CoupleChallenge": "https://scnlog.me/?s=Couplechallenge",
     "Temptation Island VIP": "https://scnlog.me/?s=Temptation%20island%20vip%20german",
     "Sommerhaus": "https://scnlog.me/?s=Sommerhaus",
+    "Der Promihof": "https://scnlog.me/?s=Der%20Promihof"
 }
 
 MAX_ITEMS = 5
@@ -20,7 +21,9 @@ old_data = {}
 if os.path.exists(DATA_FILE):
   try:
     with open(DATA_FILE, "r", encoding="utf-8") as f:
-      old_data = json.load(f)
+      loaded = json.load(f)
+      # Kompatibilität mit dem neuen Format (categories) und alten Formaten
+      old_data = loaded.get("categories", loaded)
   except Exception:
     old_data = {}
 
@@ -86,7 +89,8 @@ for category, url in URLS.items():
         if dt and dt < cutoff_date:
           continue
 
-        item_datetime_str = dt.strftime("%Y-%m-%d %H:%M") if dt else datetime.now().strftime("%Y-%m-%d %H:%M")
+        berlin_item_time = datetime.now(timezone.utc) + timedelta(hours=2)
+        item_datetime_str = dt.strftime("%Y-%m-%d %H:%M") if dt else berlin_item_time.strftime("%Y-%m-%d %H:%M")
 
         if not any(item["link"] == link for item in items):
           items.append({"title": title, "link": link, "datetime": item_datetime_str})
@@ -100,15 +104,12 @@ for category, url in URLS.items():
     print(f"Fehler bei {category}: {e}")
     all_data[category] = old_data.get(category, [])
 
-from datetime import datetime, timedelta, timezone
+# Deutsche Berlin-Zeit für den Aktualisierungs-Timestamp (UTC + 2 im Sommer)
+berlin_now = datetime.now(timezone.utc) + timedelta(hours=2)
 
-# Deutsche Zeit berechnen (UTC + 2 Stunden im Sommer / MESZ)
-berlin_time = datetime.now(timezone.utc) + timedelta(hours=2)
-
-# Ausgabe-Struktur inklusive Aktualisierungs-Zeitstempel auf Berlin-Zeit
 output_structure = {
-    "last_updated": berlin_time.strftime("%Y-%m-%d %H:%M"),
-    "categories": all_data,
+    "last_updated": berlin_now.strftime("%Y-%m-%d %H:%M"),
+    "categories": all_data
 }
 
 with open(DATA_FILE, "w", encoding="utf-8") as f:
