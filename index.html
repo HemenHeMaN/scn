@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reality TV Release Index</title>
+    <title>Reality Show Updates</title>
     <style>
         :root {
             --bg-color: #f4f4f9;
@@ -32,7 +32,6 @@
             margin: 20px 0 30px 0;
         }
 
-        /* Responsive Grid: Passt sich automatisch an Bildschirmgröße an */
         #content {
             display: grid;
             grid-template-columns: 1fr;
@@ -41,13 +40,13 @@
 
         @media (min-width: 768px) {
             #content {
-                grid-template-columns: repeat(2, 1fr); /* Ab Tablet: 2 Spalten */
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
         @media (min-width: 1024px) {
             #content {
-                grid-template-columns: repeat(3, 1fr); /* Ab Desktop: 3 Spalten */
+                grid-template-columns: repeat(3, 1fr);
             }
         }
 
@@ -85,11 +84,7 @@
             border-radius: 8px;
             background: #f8fafc;
             border: 1px solid var(--border-color);
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
-        }
-
-        li:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: box-shadow 0.1s ease;
         }
 
         li.is-new {
@@ -108,7 +103,7 @@
             text-decoration: none;
             font-weight: 600;
             font-size: 0.95rem;
-            word-break: break-word; /* Verhindert Überlaufen bei langen Namen */
+            word-break: break-word;
         }
 
         a:hover {
@@ -169,7 +164,6 @@
                 container.innerHTML = '';
                 container.classList.remove('loading');
 
-                // Heutiges und gestriges Datum als String ermitteln (YYYY-MM-DD)
                 const now = new Date();
                 const todayStr = now.toISOString().split('T')[0];
 
@@ -210,7 +204,7 @@
                         });
                         html += '</ul>';
                     } else {
-                        html += '<p style="color: #718096; font-size: 0.9rem;">Keine Einträge gefunden.</p>';
+                        html += '<p style="color: #718096; font-size: 0.9rem;">Keine aktuellen Einträge (heute/gestern).</p>';
                     }
                     
                     div.innerHTML = html;
