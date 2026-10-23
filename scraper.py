@@ -100,10 +100,15 @@ for category, url in URLS.items():
     print(f"Fehler bei {category}: {e}")
     all_data[category] = old_data.get(category, [])
 
-# Ausgabe-Struktur inklusive Aktualisierungs-Zeitstempel
+from datetime import datetime, timedelta, timezone
+
+# Deutsche Zeit berechnen (UTC + 2 Stunden im Sommer / MESZ)
+berlin_time = datetime.now(timezone.utc) + timedelta(hours=2)
+
+# Ausgabe-Struktur inklusive Aktualisierungs-Zeitstempel auf Berlin-Zeit
 output_structure = {
-    "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M"),
-    "categories": all_data
+    "last_updated": berlin_time.strftime("%Y-%m-%d %H:%M"),
+    "categories": all_data,
 }
 
 with open(DATA_FILE, "w", encoding="utf-8") as f:
