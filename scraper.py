@@ -22,7 +22,6 @@ if os.path.exists(DATA_FILE):
   try:
     with open(DATA_FILE, "r", encoding="utf-8") as f:
       loaded = json.load(f)
-      # Kompatibilität mit dem neuen Format (categories) und alten Formaten
       old_data = loaded.get("categories", loaded)
   except Exception:
     old_data = {}
@@ -58,17 +57,18 @@ for category, url in URLS.items():
 
     for a in soup.find_all("a", href=True):
       title = a.get_text(strip=True)
-      link = a["href"]
+      detail_link = a["href"]
 
       if not title or ("German" in title and len(title) < 15):
         continue
-      if not link or "scnlog.me" not in link:
+      if not detail_link or "scnlog.me" not in detail_link:
         continue
 
       if "GERMAN" in title.upper() or "S0" in title.upper() or "STAFFEL" in title.upper():
-        if link.startswith("/"):
-          link = "https://scnlog.me" + link
+        if detail_link.startswith("/"):
+          detail_link = "https://scnlog.me" + detail_link
 
+        # 1. Datum & Uhrzeit aus der Übersicht ermitteln
         row_container = a
         for _ in range(5):
           if row_container.parent:
@@ -85,15 +85,48 @@ for category, url in URLS.items():
         time_str = time_match.group(0) if time_match else "00:00"
 
         dt = parse_scnlog_datetime(date_str, time_str)
-
         if dt and dt < cutoff_date:
           continue
 
         berlin_item_time = datetime.now(timezone.utc) + timedelta(hours=2)
         item_datetime_str = dt.strftime("%Y-%m-%d %H:%M") if dt else berlin_item_time.strftime("%Y-%m-%d %H:%M")
 
-        if not any(item["link"] == link for item in items):
-          items.append({"title": title, "link": link, "datetime": item_datetime_str})
+        # 2. Detailseite aufrufen, um die Download-Links (MultiUp etc.) zu finden
+        download_links = []
+        try:
+          detail_resp = scraper.get(detail_link, timeout=10)
+          if detail_resp.status_code == 200:
+            detail_soup = BeautifulSoup(detail_resp.text, "html.parser")
+            # Alle Links auf der Detailseite durchsuchen
+            for link_tag in detail_soup.find_all("a", href=True):
+              href = link_tag["href"]
+              # Nach typischen Hostern oder direkt MultiUp filtern
+              if any(h in href.lower() for h in ["multiup.io", "ddownload.com", "nitroflare.com"]):
+                if href not in download_links:
+                  download_links.append(href)
+            
+            # Falls im Textblock (z.B. <pre> oder Code-Bereich) Links stehen
+            for code_tag in detail_soup.find_all(["pre", "code", "div"]):
+              code_text = code_tag.get_text()
+              found_urls = re.findall(r'https?://[^\s<>"]+', code_text)
+              for url_item in found_urls:
+                if any(h in url_item.lower() for h in ["multiup.io", "ddownload.com", "nitroflare.com"]):
+                  if url_item not in download_links:
+                    download_links.append(url_item)
+        except Exception as e:
+          print(f"Fehler beim Laden der Detailseite {detail_link}: {e}")
+
+        # Primärer MultiUp-Link (falls vorhanden, sonst der erste gefundene Link oder Fallback auf Detailseite)
+        multiup_link = next((l for l in download_links if "multiup.io" in l), detail_link)
+
+        if not any(item["title"] == title for item in items):
+          items.append({
+              "title": title,
+              "link": detail_link,
+              "multiup": multiup_link,
+              "all_links": download_links,
+              "datetime": item_datetime_str
+          })
 
       if len(items) >= MAX_ITEMS:
         break
@@ -104,9 +137,7 @@ for category, url in URLS.items():
     print(f"Fehler bei {category}: {e}")
     all_data[category] = old_data.get(category, [])
 
-# Deutsche Berlin-Zeit für den Aktualisierungs-Timestamp (UTC + 2 im Sommer)
 berlin_now = datetime.now(timezone.utc) + timedelta(hours=2)
-
 output_structure = {
     "last_updated": berlin_now.strftime("%Y-%m-%d %H:%M"),
     "categories": all_data
