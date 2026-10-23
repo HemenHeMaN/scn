@@ -48,7 +48,7 @@ for category, url in URLS.items():
   try:
     response = scraper.get(url, timeout=20)
     if response.status_code != 200:
-      print(f"Fehler bei {category}: HTTP {response.status_code}")
+      print(f"Fehler bei {category}: HTTP {response.Status_code}")
       all_data[category] = old_data.get(category, [])
       continue
 
@@ -68,7 +68,6 @@ for category, url in URLS.items():
         if detail_link.startswith("/"):
           detail_link = "https://scnlog.me" + detail_link
 
-        # 1. Datum & Uhrzeit aus der Übersicht ermitteln
         row_container = a
         for _ in range(5):
           if row_container.parent:
@@ -91,40 +90,38 @@ for category, url in URLS.items():
         berlin_item_time = datetime.now(timezone.utc) + timedelta(hours=2)
         item_datetime_str = dt.strftime("%Y-%m-%d %H:%M") if dt else berlin_item_time.strftime("%Y-%m-%d %H:%M")
 
-        # 2. Detailseite aufrufen, um die Download-Links (MultiUp etc.) zu finden
+        # Detailseite aufrufen, um exakte Download-Links abzugreifen
         download_links = []
         try:
           detail_resp = scraper.get(detail_link, timeout=10)
           if detail_resp.status_code == 200:
             detail_soup = BeautifulSoup(detail_resp.text, "html.parser")
-            # Alle Links auf der Detailseite durchsuchen
-            for link_tag in detail_soup.find_all("a", href=True):
-              href = link_tag["href"]
-              # Nach typischen Hostern oder direkt MultiUp filtern
-              if any(h in href.lower() for h in ["multiup.io", "ddownload.com", "nitroflare.com"]):
-                if href not in download_links:
-                  download_links.append(href)
             
-            # Falls im Textblock (z.B. <pre> oder Code-Bereich) Links stehen
-            for code_tag in detail_soup.find_all(["pre", "code", "div"]):
-              code_text = code_tag.get_text()
-              found_urls = re.findall(r'https?://[^\s<>"]+', code_text)
+            # Alle Links und Textbereiche nach Hoster-URLs absuchen
+            for tag in detail_soup.find_all(["a", "pre", "code", "div"]):
+              text_to_check = tag.get("href", "") + " " + tag.get_text()
+              found_urls = re.findall(r'https?://[^\s<>"]+', text_to_check)
               for url_item in found_urls:
                 if any(h in url_item.lower() for h in ["multiup.io", "ddownload.com", "nitroflare.com"]):
-                  if url_item not in download_links:
-                    download_links.append(url_item)
+                  # Bereinigen von eventuellen HTML-Resten am Ende der URL
+                  clean_url = url_item.rstrip(".,;:)'\"]")
+                  if clean_url not in download_links:
+                    download_links.append(clean_url)
         except Exception as e:
           print(f"Fehler beim Laden der Detailseite {detail_link}: {e}")
 
-        # Primärer MultiUp-Link (falls vorhanden, sonst der erste gefundene Link oder Fallback auf Detailseite)
-        multiup_link = next((l for l in download_links if "multiup.io" in l), detail_link)
+        # Versuche primär einen MultiUp-Link zu finden, sonst einen anderen Mirror oder Fallback auf Detailseite
+        multiup_link = next((l for l in download_links if "multiup.io" in l), None)
+        if not multiup_link and download_links:
+          multiup_link = download_links[0] # Nimm den ersten gefundenen Hoster-Link
+        if not multiup_link:
+          multiup_link = detail_link # Fallback
 
         if not any(item["title"] == title for item in items):
           items.append({
               "title": title,
               "link": detail_link,
               "multiup": multiup_link,
-              "all_links": download_links,
               "datetime": item_datetime_str
           })
 
