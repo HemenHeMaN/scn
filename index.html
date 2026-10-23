@@ -29,7 +29,25 @@
             text-align: center;
             color: #2d3748;
             font-size: 1.8rem;
-            margin: 20px 0 30px 0;
+            margin: 20px 0 5px 0;
+        }
+
+        .update-banner {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #718096;
+            margin-bottom: 30px;
+            background: #edf2f7;
+            padding: 8px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .banner-wrapper {
+            text-align: center;
         }
 
         #content {
@@ -150,7 +168,11 @@
 </head>
 <body>
 
-    <h1>Reality TV Release</h1>
+    <h1>Reality TV Release Index</h1>
+    <div class="banner-wrapper">
+        <div id="update-info" class="update-banner">Lade Status...</div>
+    </div>
+    
     <div id="content" class="loading">Lade Daten...</div>
 
     <script>
@@ -159,7 +181,19 @@
                 if (!response.ok) throw new Error('HTTP-Fehler! Status: ' + response.status);
                 return response.json();
             })
-            .then(data => {
+            .then(jsonResponse => {
+                // Unterstützt sowohl das neue Format mit "categories" als auch Fallback falls die alte JSON kurz da ist
+                const data = jsonResponse.categories || jsonResponse;
+                const lastUpdated = jsonResponse.last_updated;
+
+                // Aktualisierungs-Banner oben befüllen
+                const updateInfoDiv = document.getElementById('update-info');
+                if (lastUpdated) {
+                    updateInfoDiv.innerHTML = `🔄 Zuletzt aktualisiert: <strong>${lastUpdated} Uhr</strong>`;
+                } else {
+                    updateInfoDiv.style.display = 'none';
+                }
+
                 const container = document.getElementById('content');
                 container.innerHTML = '';
                 container.classList.remove('loading');
@@ -171,16 +205,12 @@
                 yesterday.setDate(now.getDate() - 1);
                 const yesterdayStr = yesterday.toISOString().split('T')[0];
 
-                // Kategorien in ein Array umwandeln, um sie nach dem neuesten Datum zu sortieren
+                // Kategorien sortieren nach dem neuesten Eintrag oben
                 const sortedCategories = Object.entries(data).sort((a, b) => {
                     const itemsA = a[1];
                     const itemsB = b[1];
-
-                    // Datum des ersten (neuesten) Eintrags jeder Kategorie holen
                     const dateA = itemsA && itemsA.length > 0 && itemsA[0].datetime ? new Date(itemsA[0].datetime) : new Date(0);
                     const dateB = itemsB && itemsB.length > 0 && itemsB[0].datetime ? new Date(itemsB[0].datetime) : new Date(0);
-
-                    // Absteigend sortieren: Neuestes Datum nach oben
                     return dateB - dateA;
                 });
 
@@ -225,6 +255,7 @@
                 }
             })
             .catch(error => {
+                document.getElementById('update-info').style.display = 'none';
                 const container = document.getElementById('content');
                 container.classList.remove('loading');
                 container.innerHTML = `<div class="error">Fehler beim Laden der data.json: ${error.message}</div>`;
