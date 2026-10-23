@@ -3,51 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reality Show Updates</title>
+    <title>Reality TV Release Index</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; background: #f4f4f9; color: #333; }
-        h1 { text-align: center; color: #444; }
-        .category { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .category h2 { margin-top: 0; color: #0066cc; border-bottom: 2px solid #eee; padding-bottom: 8px; }
-        ul { padding-left: 0; list-style: none; }
-        li { 
-            margin-bottom: 12px; 
-            padding: 12px; 
-            border-radius: 6px; 
-            background: #fafafa; 
-            border: 1px solid #eee;
-            transition: background 0.2s;
+        :root {
+            --bg-color: #f4f4f9;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #e2e8f0;
+            --primary-color: #0066cc;
+            --new-bg: #fff9db;
+            --new-border: #ffe066;
         }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            font-size: 1.8rem;
+            margin: 20px 0 30px 0;
+        }
+
+        /* Responsive Grid: Passt sich automatisch an Bildschirmgröße an */
+        #content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            #content {
+                grid-template-columns: repeat(2, 1fr); /* Ab Tablet: 2 Spalten */
+            }
+        }
+
+        @media (min-width: 1024px) {
+            #content {
+                grid-template-columns: repeat(3, 1fr); /* Ab Desktop: 3 Spalten */
+            }
+        }
+
+        .category {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .category h2 {
+            margin-top: 0;
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            padding-left: 0;
+            list-style: none;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        li {
+            padding: 12px;
+            border-radius: 8px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        li:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
         li.is-new {
-            background: #fff9db; /* Sanftes Gelb für heute & gestern */
-            border-color: #ffe066;
+            background: var(--new-bg);
+            border-color: var(--new-border);
         }
-        .item-content { display: flex; flex-direction: column; gap: 4px; }
-        a { color: #0056b3; text-decoration: none; font-weight: 500; font-size: 15px; }
-        a:hover { text-decoration: underline; }
+
+        .item-content {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        a {
+            color: #1a365d;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            word-break: break-word; /* Verhindert Überlaufen bei langen Namen */
+        }
+
+        a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
         .meta-info {
-            font-size: 12px;
-            color: #666;
+            font-size: 0.8rem;
+            color: #718096;
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
         }
+
         .badge-new {
-            background: #ff6b6b;
+            background: #e53e3e;
             color: white;
             font-size: 10px;
-            font-weight: bold;
+            font-weight: 700;
             padding: 2px 6px;
             border-radius: 4px;
+            letter-spacing: 0.5px;
             text-transform: uppercase;
         }
-        .error { color: red; background: #ffe6e6; padding: 10px; border-radius: 5px; }
+
+        .error {
+            color: #c53030;
+            background: #fff5f5;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #feb2b2;
+            text-align: center;
+        }
+
+        .loading {
+            text-align: center;
+            color: #718096;
+            font-size: 1.1rem;
+            padding: 40px;
+        }
     </style>
 </head>
 <body>
 
     <h1>Reality TV Release Index</h1>
-    <div id="content">Lade Daten...</div>
+    <div id="content" class="loading">Lade Daten...</div>
 
     <script>
         fetch('data.json?t=' + new Date().getTime())
@@ -58,6 +167,7 @@
             .then(data => {
                 const container = document.getElementById('content');
                 container.innerHTML = '';
+                container.classList.remove('loading');
 
                 // Heutiges und gestriges Datum als String ermitteln (YYYY-MM-DD)
                 const now = new Date();
@@ -79,9 +189,7 @@
                             let dateDisplay = item.datetime || '';
 
                             if (item.datetime) {
-                                const itemDateStr = item.datetime.split(' ')[0]; // Nur den Tag YYYY-MM-DD holen
-                                
-                                // Prüfen, ob das Datum von heute oder gestern ist
+                                const itemDateStr = item.datetime.split(' ')[0]; 
                                 if (itemDateStr === todayStr || itemDateStr === yesterdayStr) {
                                     isNew = true;
                                 }
@@ -102,7 +210,7 @@
                         });
                         html += '</ul>';
                     } else {
-                        html += '<p>Keine Einträge gefunden.</p>';
+                        html += '<p style="color: #718096; font-size: 0.9rem;">Keine Einträge gefunden.</p>';
                     }
                     
                     div.innerHTML = html;
@@ -110,7 +218,9 @@
                 }
             })
             .catch(error => {
-                document.getElementById('content').innerHTML = `<div class="error">Fehler beim Laden der data.json: ${error.message}</div>`;
+                const container = document.getElementById('content');
+                container.classList.remove('loading');
+                container.innerHTML = `<div class="error">Fehler beim Laden der data.json: ${error.message}</div>`;
                 console.error('Fehler:', error);
             });
     </script>
