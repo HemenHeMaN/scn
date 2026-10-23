@@ -13,6 +13,25 @@
             --primary-color: #0066cc;
             --new-bg: #fff9db;
             --new-border: #ffe066;
+            --banner-bg: #edf2f7;
+            --banner-text: #718096;
+            --li-bg: #f8fafc;
+            --link-color: #1a365d;
+        }
+
+        /* Dark Mode Farben */
+        [data-theme="dark"] {
+            --bg-color: #1a202c;
+            --card-bg: #2d3748;
+            --text-color: #e2e8f0;
+            --border-color: #4a5568;
+            --primary-color: #63b3ed;
+            --new-bg: #4a3b10;
+            --new-border: #b7791f;
+            --banner-bg: #2d3748;
+            --banner-text: #a0aec0;
+            --li-bg: #323f53;
+            --link-color: #90cdf4;
         }
 
         body {
@@ -23,21 +42,47 @@
             background: var(--bg-color);
             color: var(--text-color);
             line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0 10px 0;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         h1 {
-            text-align: center;
-            color: #2d3748;
+            color: var(--text-color);
             font-size: 1.8rem;
-            margin: 20px 0 5px 0;
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .btn-theme {
+            background: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .btn-theme:hover {
+            border-color: var(--primary-color);
         }
 
         .update-banner {
-            text-align: center;
             font-size: 0.85rem;
-            color: #718096;
+            color: var(--banner-text);
             margin-bottom: 30px;
-            background: #edf2f7;
+            background: var(--banner-bg);
             padding: 8px 12px;
             border-radius: 20px;
             display: inline-block;
@@ -73,6 +118,7 @@
             border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
+            transition: background 0.3s, border-color 0.3s;
         }
 
         .category h2 {
@@ -97,9 +143,9 @@
         li {
             padding: 12px;
             border-radius: 8px;
-            background: #f8fafc;
+            background: var(--li-bg);
             border: 1px solid var(--border-color);
-            transition: box-shadow 0.1s ease;
+            transition: background 0.3s, border-color 0.3s;
         }
 
         li.is-new {
@@ -114,7 +160,7 @@
         }
 
         a.title-link {
-            color: #1a365d;
+            color: var(--link-color);
             text-decoration: none;
             font-weight: 600;
             font-size: 0.95rem;
@@ -122,7 +168,6 @@
         }
 
         a.title-link:hover {
-            color: var(--primary-color);
             text-decoration: underline;
         }
 
@@ -137,7 +182,7 @@
 
         .meta-info {
             font-size: 0.8rem;
-            color: #718096;
+            color: var(--banner-text);
             display: flex;
             align-items: center;
             gap: 6px;
@@ -157,7 +202,7 @@
             text-transform: uppercase;
             cursor: pointer;
             border: none;
-            transition: background 0.2s;
+            transition: opacity 0.2s;
         }
 
         .btn-download {
@@ -166,7 +211,7 @@
         }
 
         .btn-download:hover {
-            background: #2c7a7b;
+            opacity: 0.9;
         }
 
         .btn-copy {
@@ -175,7 +220,7 @@
         }
 
         .btn-copy:hover {
-            background: #2d3748;
+            opacity: 0.9;
         }
 
         .badge-new {
@@ -200,7 +245,7 @@
 
         .loading {
             text-align: center;
-            color: #718096;
+            color: var(--banner-text);
             font-size: 1.1rem;
             padding: 40px;
         }
@@ -208,7 +253,13 @@
 </head>
 <body>
 
-    <h1>Reality TV Release Index</h1>
+    <header>
+        <!-- Unsichtbarer Platzhalter links für perfekte Zentrierung des Titels -->
+        <div style="width: 90px;"></div>
+        <h1>Reality TV Release Index</h1>
+        <button class="btn-theme" id="theme-toggle" onclick="toggleTheme()">🌙 Dark Mode</button>
+    </header>
+
     <div class="banner-wrapper">
         <div id="update-info" class="update-banner">Lade Status...</div>
     </div>
@@ -216,12 +267,33 @@
     <div id="content" class="loading">Lade Daten...</div>
 
     <script>
+        // Dark Mode beim Starten prüfen
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        if (currentTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('theme-toggle').innerText = '☀️ Light Mode';
+        }
+
+        function toggleTheme() {
+            const theme = document.documentElement.getAttribute('data-theme');
+            const toggleBtn = document.getElementById('theme-toggle');
+            if (theme === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                toggleBtn.innerText = '🌙 Dark Mode';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                toggleBtn.innerText = '☀️ Light Mode';
+            }
+        }
+
         // Funktion zum Kopieren des Links in die Zwischenablage
         function copyToClipboard(text, buttonElement) {
             navigator.clipboard.writeText(text).then(() => {
                 const originalText = buttonElement.innerText;
                 buttonElement.innerText = "✓ Kopiert!";
-                buttonElement.style.background = "#38a169"; // Grün als Feedback
+                buttonElement.style.background = "#38a169";
                 setTimeout(() => {
                     buttonElement.innerText = originalText;
                     buttonElement.style.background = "#4a5568";
@@ -307,7 +379,7 @@
                         });
                         html += '</ul>';
                     } else {
-                        html += '<p style="color: #718096; font-size: 0.9rem;">Keine aktuellen Einträge (heute/gestern).</p>';
+                        html += '<p style="color: var(--banner-text); font-size: 0.9rem;">Keine aktuellen Einträge (heute/gestern).</p>';
                     }
                     
                     div.innerHTML = html;
