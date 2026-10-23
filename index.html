@@ -41,9 +41,6 @@
             padding: 8px 12px;
             border-radius: 20px;
             display: inline-block;
-            width: fit-content;
-            margin-left: auto;
-            margin-right: auto;
         }
 
         .banner-wrapper {
@@ -93,7 +90,7 @@
             margin: 0;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             flex-grow: 1;
         }
 
@@ -113,10 +110,10 @@
         .item-content {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
         }
 
-        a {
+        a.title-link {
             color: #1a365d;
             text-decoration: none;
             font-weight: 600;
@@ -124,9 +121,18 @@
             word-break: break-word;
         }
 
-        a:hover {
+        a.title-link:hover {
             color: var(--primary-color);
             text-decoration: underline;
+        }
+
+        .action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 4px;
         }
 
         .meta-info {
@@ -134,8 +140,24 @@
             color: #718096;
             display: flex;
             align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .btn-download {
+            background: #319795;
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 4px;
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: background 0.2s;
+        }
+
+        .btn-download:hover {
+            background: #2c7a7b;
+            text-decoration: none;
         }
 
         .badge-new {
@@ -168,7 +190,7 @@
 </head>
 <body>
 
-    <h1>Reality TV Release</h1>
+    <h1>Reality TV Release Index</h1>
     <div class="banner-wrapper">
         <div id="update-info" class="update-banner">Lade Status...</div>
     </div>
@@ -182,11 +204,9 @@
                 return response.json();
             })
             .then(jsonResponse => {
-                // Unterstützt sowohl das neue Format mit "categories" als auch Fallback falls die alte JSON kurz da ist
                 const data = jsonResponse.categories || jsonResponse;
                 const lastUpdated = jsonResponse.last_updated;
 
-                // Aktualisierungs-Banner oben befüllen
                 const updateInfoDiv = document.getElementById('update-info');
                 if (lastUpdated) {
                     updateInfoDiv.innerHTML = `🔄 Zuletzt aktualisiert: <strong>${lastUpdated} Uhr</strong>`;
@@ -205,7 +225,6 @@
                 yesterday.setDate(now.getDate() - 1);
                 const yesterdayStr = yesterday.toISOString().split('T')[0];
 
-                // Kategorien sortieren nach dem neuesten Eintrag oben
                 const sortedCategories = Object.entries(data).sort((a, b) => {
                     const itemsA = a[1];
                     const itemsB = b[1];
@@ -234,13 +253,17 @@
 
                             const liClass = isNew ? 'is-new' : '';
                             const badge = isNew ? '<span class="badge-new">Neu</span>' : '';
+                            const downloadLink = item.multiup || item.link;
 
                             html += `<li class="${liClass}">
                                 <div class="item-content">
-                                    <a href="${item.link}" target="_blank">${item.title}</a>
-                                    <div class="meta-info">
-                                        ${badge}
-                                        <span>📅 ${dateDisplay} Uhr</span>
+                                    <a class="title-link" href="${item.link}" target="_blank">${item.title}</a>
+                                    <div class="action-row">
+                                        <div class="meta-info">
+                                            ${badge}
+                                            <span>📅 ${dateDisplay} Uhr</span>
+                                        </div>
+                                        <a class="btn-download" href="${downloadLink}" target="_blank">📥 Download</a>
                                     </div>
                                 </div>
                             </li>`;
