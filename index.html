@@ -143,21 +143,39 @@
             gap: 6px;
         }
 
-        .btn-download {
-            background: #319795;
-            color: white;
+        .button-group {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-download, .btn-copy {
             font-size: 11px;
             font-weight: 700;
-            padding: 4px 10px;
+            padding: 4px 8px;
             border-radius: 4px;
             text-decoration: none;
             text-transform: uppercase;
+            cursor: pointer;
+            border: none;
             transition: background 0.2s;
+        }
+
+        .btn-download {
+            background: #319795;
+            color: white;
         }
 
         .btn-download:hover {
             background: #2c7a7b;
-            text-decoration: none;
+        }
+
+        .btn-copy {
+            background: #4a5568;
+            color: white;
+        }
+
+        .btn-copy:hover {
+            background: #2d3748;
         }
 
         .badge-new {
@@ -198,6 +216,22 @@
     <div id="content" class="loading">Lade Daten...</div>
 
     <script>
+        // Funktion zum Kopieren des Links in die Zwischenablage
+        function copyToClipboard(text, buttonElement) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = buttonElement.innerText;
+                buttonElement.innerText = "✓ Kopiert!";
+                buttonElement.style.background = "#38a169"; // Grün als Feedback
+                setTimeout(() => {
+                    buttonElement.innerText = originalText;
+                    buttonElement.style.background = "#4a5568";
+                }, 1500);
+            }).catch(err => {
+                console.error('Fehler beim Kopieren: ', err);
+                alert('Konnte nicht kopiert werden.');
+            });
+        }
+
         fetch('data.json?t=' + new Date().getTime())
             .then(response => {
                 if (!response.ok) throw new Error('HTTP-Fehler! Status: ' + response.status);
@@ -253,8 +287,6 @@
 
                             const liClass = isNew ? 'is-new' : '';
                             const badge = isNew ? '<span class="badge-new">Neu</span>' : '';
-                            
-                            // Hier wird sichergestellt, dass der Download-Button den MultiUp-Link nutzt (mit Fallback auf item.link falls leer)
                             const downloadUrl = item.multiup || item.link;
 
                             html += `<li class="${liClass}">
@@ -265,7 +297,10 @@
                                             ${badge}
                                             <span>📅 ${dateDisplay} Uhr</span>
                                         </div>
-                                        <a class="btn-download" href="${downloadUrl}" target="_blank">📥 Download</a>
+                                        <div class="button-group">
+                                            <button class="btn-copy" onclick="copyToClipboard('${downloadUrl}', this)">📋 Copy</button>
+                                            <a class="btn-download" href="${downloadUrl}" target="_blank">📥 Download</a>
+                                        </div>
                                     </div>
                                 </div>
                             </li>`;
