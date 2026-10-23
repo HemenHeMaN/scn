@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reality Show Updates</title>
+    <title>Reality TV Release Index</title>
     <style>
         :root {
             --bg-color: #f4f4f9;
@@ -171,7 +171,20 @@
                 yesterday.setDate(now.getDate() - 1);
                 const yesterdayStr = yesterday.toISOString().split('T')[0];
 
-                for (const [category, items] of Object.entries(data)) {
+                // Kategorien in ein Array umwandeln, um sie nach dem neuesten Datum zu sortieren
+                const sortedCategories = Object.entries(data).sort((a, b) => {
+                    const itemsA = a[1];
+                    const itemsB = b[1];
+
+                    // Datum des ersten (neuesten) Eintrags jeder Kategorie holen
+                    const dateA = itemsA && itemsA.length > 0 && itemsA[0].datetime ? new Date(itemsA[0].datetime) : new Date(0);
+                    const dateB = itemsB && itemsB.length > 0 && itemsB[0].datetime ? new Date(itemsB[0].datetime) : new Date(0);
+
+                    // Absteigend sortieren: Neuestes Datum nach oben
+                    return dateB - dateA;
+                });
+
+                for (const [category, items] of sortedCategories) {
                     const div = document.createElement('div');
                     div.className = 'category';
                     
