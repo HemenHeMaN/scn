@@ -253,7 +253,9 @@
 
                             const liClass = isNew ? 'is-new' : '';
                             const badge = isNew ? '<span class="badge-new">Neu</span>' : '';
-                            const downloadLink = item.multiup || item.link;
+                            
+                            // Hier wird sichergestellt, dass der Download-Button den MultiUp-Link nutzt (mit Fallback auf item.link falls leer)
+                            const downloadUrl = item.multiup || item.link;
 
                             html += `<li class="${liClass}">
                                 <div class="item-content">
@@ -263,7 +265,7 @@
                                             ${badge}
                                             <span>📅 ${dateDisplay} Uhr</span>
                                         </div>
-                                        <a class="btn-download" href="${downloadLink}" target="_blank">📥 Download</a>
+                                        <a class="btn-download" href="${downloadUrl}" target="_blank">📥 Download</a>
                                     </div>
                                 </div>
                             </li>`;
