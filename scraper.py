@@ -7,22 +7,24 @@ import cloudscraper
 
 MAX_ITEMS = 5
 DATA_FILE = "data.json"
-SHOWS_HTML_FILE = "shows.html"
+SHOWS_FILE = "shows.txt"
 
-# Shows dynamisch aus der shows.html einlesen
+# Shows dynamisch aus der shows.txt einlesen
 URLS = {}
-if os.path.exists(SHOWS_HTML_FILE):
+if os.path.exists(SHOWS_FILE):
   try:
-    with open(SHOWS_HTML_FILE, "r", encoding="utf-8") as f:
-      html_content = f.read()
-      soup_shows = BeautifulSoup(html_content, "html.parser")
-      for a_tag in soup_shows.find_all("a", href=True):
-        show_name = a_tag.get_text(strip=True)
-        show_url = a_tag["href"]
-        if show_name and show_url:
+    with open(SHOWS_FILE, "r", encoding="utf-8") as f:
+      for line in f:
+        line = line.strip()
+        if not line or line.startswith("#"):
+          continue
+        if "|" in line:
+          parts = line.split("|", 1)
+          show_name = parts[0].strip()
+          show_url = parts[1].strip()
           URLS[show_name] = show_url
   except Exception as e:
-    print(f"Fehler beim Lesen der {SHOWS_HTML_FILE}: {e}")
+    print(f"Fehler beim Lesen der {SHOWS_FILE}: {e}")
 
 old_data = {}
 if os.path.exists(DATA_FILE):
@@ -39,7 +41,6 @@ all_data = {}
 months_pattern = r"(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:st|nd|rd|th)?,\s+\d{4}"
 time_pattern = r"\b\d{1,2}:\d{2}\b"
 
-
 def parse_scnlog_datetime(date_str, time_str):
   try:
     clean_date = re.sub(r"(\d+)(st|nd|rd|th)", r"\1", date_str)
@@ -48,7 +49,6 @@ def parse_scnlog_datetime(date_str, time_str):
     return dt
   except Exception:
     return None
-
 
 cutoff_date = datetime.now() - timedelta(days=2)
 cutoff_date = cutoff_date.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -73,13 +73,9 @@ for category, url in URLS.items():
       if not detail_link or "scnlog.me" not in detail_link:
         continue
 
-      if (
-          "GERMAN" in title.upper()
-          or "S0" in title.upper()
-          or "STAFFEL" in title.upper()
-      ):
+      if "GERMAN" in title.upper() or "S0" in title.upper() or "STAFFEL" in title.upper():
         if detail_link.startswith("/"):
-          detail_link = "[https://scnlog.me](https://scnlog.me)" + detail_link
+          detail_link = "https://scnlog.me" + detail_link
 
         row_container = a
         for _ in range(5):
@@ -101,11 +97,7 @@ for category, url in URLS.items():
           continue
 
         berlin_item_time = datetime.now(timezone.utc) + timedelta(hours=2)
-        item_datetime_str = (
-            dt.strftime("%Y-%m-%d %H:%M")
-            if dt
-            else berlin_item_time.strftime("%Y-%m-%d %H:%M")
-        )
+        item_datetime_str = dt.strftime("%Y-%m-%d %H:%M") if dt else berlin_item_time.strftime("%Y-%m-%d %H:%M")
 
         download_links = []
         try:
@@ -116,19 +108,14 @@ for category, url in URLS.items():
               text_to_check = tag.get("href", "") + " " + tag.get_text()
               found_urls = re.findall(r'https?://[^\s<>"]+', text_to_check)
               for url_item in found_urls:
-                if any(
-                    h in url_item.lower()
-                    for h in ["multiup.io", "ddownload.com", "nitroflare.com"]
-                ):
+                if any(h in url_item.lower() for h in ["multiup.io", "ddownload.com", "nitroflare.com"]):
                   clean_url = url_item.rstrip(".,;:)'\"]")
                   if clean_url not in download_links:
                     download_links.append(clean_url)
         except Exception as e:
           print(f"Fehler beim Laden der Detailseite {detail_link}: {e}")
 
-        multiup_link = next(
-            (l for l in download_links if "multiup.io" in l), None
-        )
+        multiup_link = next((l for l in download_links if "multiup.io" in l), None)
         if not multiup_link and download_links:
           multiup_link = download_links[0]
         if not multiup_link:
@@ -139,7 +126,7 @@ for category, url in URLS.items():
               "title": title,
               "link": detail_link,
               "multiup": multiup_link,
-              "datetime": item_datetime_str,
+              "datetime": item_datetime_str
           })
 
       if len(items) >= MAX_ITEMS:
@@ -154,7 +141,7 @@ for category, url in URLS.items():
 berlin_now = datetime.now(timezone.utc) + timedelta(hours=2)
 output_structure = {
     "last_updated": berlin_now.strftime("%Y-%m-%d %H:%M"),
-    "categories": all_data,
+    "categories": all_data
 }
 
 with open(DATA_FILE, "w", encoding="utf-8") as f:
