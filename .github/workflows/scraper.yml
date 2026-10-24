@@ -2,11 +2,11 @@ name: Scrape scnlog
 
 on:
   schedule:
-    - cron: "0 * * * *"   # Läuft jede Stunde zur vollen Stunde (z.B. 15:00, 16:00, 17:00 usw.)
-  workflow_dispatch:       # Erlaubt zusätzlich das manuelle Starten per Klick in GitHub
+    - cron: "0 * * * *"   # Läuft jede Stunde zur vollen Stunde
+  workflow_dispatch:       # Erlaubt manuelles Starten in GitHub
 
 permissions:
-  contents: write          # Verleiht dem Bot die nötigen Schreibrechte für den git push
+  contents: write          # Erlaubt das Pushen der neuen data.json
 
 concurrency:
   group: scrape-workflow
