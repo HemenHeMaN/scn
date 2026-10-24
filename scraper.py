@@ -7,24 +7,22 @@ import cloudscraper
 
 MAX_ITEMS = 5
 DATA_FILE = "data.json"
-SHOWS_FILE = "shows.txt"
+SHOWS_HTML_FILE = "shows.html"
 
-# Shows dynamisch aus der shows.txt einlesen
+# Shows dynamisch aus der shows.html einlesen
 URLS = {}
-if os.path.exists(SHOWS_FILE):
+if os.path.exists(SHOWS_HTML_FILE):
   try:
-    with open(SHOWS_FILE, "r", encoding="utf-8") as f:
-      for line in f:
-        line = line.strip()
-        if not line or line.startswith("#"):
-          continue
-        if "|" in line:
-          parts = line.split("|", 1)
-          show_name = parts[0].strip()
-          show_url = parts[1].strip()
+    with open(SHOWS_HTML_FILE, "r", encoding="utf-8") as f:
+      html_content = f.read()
+      soup_shows = BeautifulSoup(html_content, "html.parser")
+      for a_tag in soup_shows.find_all("a", href=True):
+        show_name = a_tag.get_text(strip=True)
+        show_url = a_tag["href"]
+        if show_name and show_url:
           URLS[show_name] = show_url
   except Exception as e:
-    print(f"Fehler beim Lesen der {SHOWS_FILE}: {e}")
+    print(f"Fehler beim Lesen der {SHOWS_HTML_FILE}: {e}")
 
 old_data = {}
 if os.path.exists(DATA_FILE):
