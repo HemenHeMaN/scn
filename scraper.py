@@ -39,6 +39,7 @@ all_data = {}
 months_pattern = r"(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:st|nd|rd|th)?,\s+\d{4}"
 time_pattern = r"\b\d{1,2}:\d{2}\b"
 
+
 def parse_scnlog_datetime(date_str, time_str):
   try:
     clean_date = re.sub(r"(\d+)(st|nd|rd|th)", r"\1", date_str)
@@ -47,6 +48,7 @@ def parse_scnlog_datetime(date_str, time_str):
     return dt
   except Exception:
     return None
+
 
 cutoff_date = datetime.now() - timedelta(days=2)
 cutoff_date = cutoff_date.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -71,9 +73,13 @@ for category, url in URLS.items():
       if not detail_link or "scnlog.me" not in detail_link:
         continue
 
-      if "GERMAN" in title.upper() or "S0" in title.upper() or "STAFFEL" in title.upper():
+      if (
+          "GERMAN" in title.upper()
+          or "S0" in title.upper()
+          or "STAFFEL" in title.upper()
+      ):
         if detail_link.startswith("/"):
-          detail_link = "https://scnlog.me" + detail_link
+          detail_link = "[https://scnlog.me](https://scnlog.me)" + detail_link
 
         row_container = a
         for _ in range(5):
@@ -95,7 +101,11 @@ for category, url in URLS.items():
           continue
 
         berlin_item_time = datetime.now(timezone.utc) + timedelta(hours=2)
-        item_datetime_str = dt.strftime("%Y-%m-%d %H:%M") if dt else berlin_item_time.strftime("%Y-%m-%d %H:%M")
+        item_datetime_str = (
+            dt.strftime("%Y-%m-%d %H:%M")
+            if dt
+            else berlin_item_time.strftime("%Y-%m-%d %H:%M")
+        )
 
         download_links = []
         try:
@@ -106,14 +116,19 @@ for category, url in URLS.items():
               text_to_check = tag.get("href", "") + " " + tag.get_text()
               found_urls = re.findall(r'https?://[^\s<>"]+', text_to_check)
               for url_item in found_urls:
-                if any(h in url_item.lower() for h in ["multiup.io", "ddownload.com", "nitroflare.com"]):
+                if any(
+                    h in url_item.lower()
+                    for h in ["multiup.io", "ddownload.com", "nitroflare.com"]
+                ):
                   clean_url = url_item.rstrip(".,;:)'\"]")
                   if clean_url not in download_links:
                     download_links.append(clean_url)
         except Exception as e:
           print(f"Fehler beim Laden der Detailseite {detail_link}: {e}")
 
-        multiup_link = next((l for l in download_links if "multiup.io" in l), None)
+        multiup_link = next(
+            (l for l in download_links if "multiup.io" in l), None
+        )
         if not multiup_link and download_links:
           multiup_link = download_links[0]
         if not multiup_link:
@@ -124,7 +139,7 @@ for category, url in URLS.items():
               "title": title,
               "link": detail_link,
               "multiup": multiup_link,
-              "datetime": item_datetime_str
+              "datetime": item_datetime_str,
           })
 
       if len(items) >= MAX_ITEMS:
@@ -139,7 +154,7 @@ for category, url in URLS.items():
 berlin_now = datetime.now(timezone.utc) + timedelta(hours=2)
 output_structure = {
     "last_updated": berlin_now.strftime("%Y-%m-%d %H:%M"),
-    "categories": all_data
+    "categories": all_data,
 }
 
 with open(DATA_FILE, "w", encoding="utf-8") as f:
