@@ -5,17 +5,26 @@ import re
 from bs4 import BeautifulSoup
 import cloudscraper
 
-URLS = {
-    "Are You The One": "https://scnlog.me/?s=are%20you%20the%20one%20reality",
-    "Love Island VIP": "https://scnlog.me/?s=Love%20island%20vip%20german",
-    "CoupleChallenge": "https://scnlog.me/?s=Couplechallenge",
-    "Temptation Island VIP": "https://scnlog.me/?s=Temptation%20island%20vip%20german",
-    "Sommerhaus": "https://scnlog.me/?s=Sommerhaus",
-    "Der Promihof": "https://scnlog.me/?s=Der%20Promihof"
-}
-
 MAX_ITEMS = 5
 DATA_FILE = "data.json"
+SHOWS_FILE = "shows.txt"
+
+# Shows dynamisch aus der shows.txt einlesen
+URLS = {}
+if os.path.exists(SHOWS_FILE):
+  try:
+    with open(SHOWS_FILE, "r", encoding="utf-8") as f:
+      for line in f:
+        line = line.strip()
+        if not line or line.startswith("#"):
+          continue
+        if "|" in line:
+          parts = line.split("|", 1)
+          show_name = parts[0].strip()
+          show_url = parts[1].strip()
+          URLS[show_name] = show_url
+  except Exception as e:
+    print(f"Fehler beim Lesen der {SHOWS_FILE}: {e}")
 
 old_data = {}
 if os.path.exists(DATA_FILE):
@@ -48,7 +57,7 @@ for category, url in URLS.items():
   try:
     response = scraper.get(url, timeout=20)
     if response.status_code != 200:
-      print(f"Fehler bei {category}: HTTP {response.Status_code}")
+      print(f"Fehler bei {category}: HTTP {response.status_code}")
       all_data[category] = old_data.get(category, [])
       continue
 
@@ -90,32 +99,27 @@ for category, url in URLS.items():
         berlin_item_time = datetime.now(timezone.utc) + timedelta(hours=2)
         item_datetime_str = dt.strftime("%Y-%m-%d %H:%M") if dt else berlin_item_time.strftime("%Y-%m-%d %H:%M")
 
-        # Detailseite aufrufen, um exakte Download-Links abzugreifen
         download_links = []
         try:
           detail_resp = scraper.get(detail_link, timeout=10)
           if detail_resp.status_code == 200:
             detail_soup = BeautifulSoup(detail_resp.text, "html.parser")
-            
-            # Alle Links und Textbereiche nach Hoster-URLs absuchen
             for tag in detail_soup.find_all(["a", "pre", "code", "div"]):
               text_to_check = tag.get("href", "") + " " + tag.get_text()
               found_urls = re.findall(r'https?://[^\s<>"]+', text_to_check)
               for url_item in found_urls:
                 if any(h in url_item.lower() for h in ["multiup.io", "ddownload.com", "nitroflare.com"]):
-                  # Bereinigen von eventuellen HTML-Resten am Ende der URL
                   clean_url = url_item.rstrip(".,;:)'\"]")
                   if clean_url not in download_links:
                     download_links.append(clean_url)
         except Exception as e:
           print(f"Fehler beim Laden der Detailseite {detail_link}: {e}")
 
-        # Versuche primär einen MultiUp-Link zu finden, sonst einen anderen Mirror oder Fallback auf Detailseite
         multiup_link = next((l for l in download_links if "multiup.io" in l), None)
         if not multiup_link and download_links:
-          multiup_link = download_links[0] # Nimm den ersten gefundenen Hoster-Link
+          multiup_link = download_links[0]
         if not multiup_link:
-          multiup_link = detail_link # Fallback
+          multiup_link = detail_link
 
         if not any(item["title"] == title for item in items):
           items.append({
