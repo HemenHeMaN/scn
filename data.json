@@ -1,8 +1,21 @@
 {
-    "last_updated": "2026-10-28 01:22",
+    "last_updated": "2026-10-28 05:10",
     "categories": {
         "Are You The One": [],
-        "Love Island": [],
+        "Love Island": [
+            {
+                "title": "Love.Island.VIP.S03E14.GERMAN.1080p.WEB.H264-SunDry",
+                "link": "https://scnlog.me/foreign/love-island-vip-s03e14-german-1080p-web-h264-sundry/",
+                "multiup": "https://multiup.io/download/1c5ef61cfb000982f26a08f6b9b5315e/Love.Island.VIP.S03E14.GERMAN.1080p.WEB.H264-SunDry.mkv",
+                "datetime": "2026-10-28 02:53"
+            },
+            {
+                "title": "Love.Island.VIP.S03E13.GERMAN.1080p.WEB.H264-SunDry",
+                "link": "https://scnlog.me/foreign/love-island-vip-s03e13-german-1080p-web-h264-sundry/",
+                "multiup": "https://multiup.io/download/b09875d7c66b502beb7ab315c00bf1d2/Love.Island.VIP.S03E13.GERMAN.1080p.WEB.H264-SunDry.mkv",
+                "datetime": "2026-10-28 02:44"
+            }
+        ],
         "CoupleChallenge": [],
         "Temptation Island": [
             {
