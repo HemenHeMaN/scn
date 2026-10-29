@@ -50,7 +50,7 @@ def parse_scnlog_datetime(date_str, time_str):
   except Exception:
     return None
 
-cutoff_date = datetime.now() - timedelta(days=2)
+cutoff_date = datetime.now() - timedelta(days=4)
 cutoff_date = cutoff_date.replace(hour=0, minute=0, second=0, microsecond=0)
 
 for category, url in URLS.items():
