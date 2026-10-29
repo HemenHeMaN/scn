@@ -134,10 +134,9 @@ for category, url in URLS.items():
       if len(items) >= MAX_ITEMS:
         break
 
-    # Einträge nach Datum sortieren (neueste zuerst)
+    # 1. Einträge innerhalb der Show nach Datum sortieren (neueste zuerst)
     items.sort(key=lambda x: x["_raw_dt"], reverse=True)
 
-    # Hilfsfeld wieder entfernen
     for item in items:
       item.pop("_raw_dt", None)
 
@@ -147,13 +146,26 @@ for category, url in URLS.items():
     print(f"Fehler bei {category}: {e}")
     all_data[category] = old_data.get(category, [])
 
+# 2. NEU: Kategorien so sortieren, dass Shows mit Einträgen OBERHALB stehen 
+# (nach dem Datum ihres allerneuesten Eintrags) und leere Shows ganz UNTEN landen.
+sorted_categories = dict(
+    sorted(
+        all_data.items(),
+        key=lambda item: (
+            len(item[1]) > 0,  # True (hat Einträge) kommt vor False (leer)
+            item[1][0]["datetime"] if len(item[1]) > 0 else ""  # Neuestes Datum als Unterkriterium
+        ),
+        reverse=True
+    )
+)
+
 berlin_now = datetime.now(ZoneInfo("Europe/Berlin"))
 output_structure = {
     "last_updated": berlin_now.strftime("%d.%m.%Y %H:%M"),
-    "categories": all_data
+    "categories": sorted_categories
 }
 
 with open(DATA_FILE, "w", encoding="utf-8") as f:
   json.dump(output_structure, f, ensure_ascii=False, indent=4)
 
-print("Scraping beendet und data.json aktualisiert.")
+print("Scraping beendet und data.json perfekt sortiert aktualisiert.")
