@@ -128,17 +128,16 @@ for category, url in URLS.items():
               "link": detail_link,
               "multiup": multiup_link,
               "datetime": item_datetime_str,
-              # Hilfsfeld zum Sortieren (wird nachher nicht in JSON benötigt, schadet aber nicht)
               "_raw_dt": dt if dt else berlin_item_time
           })
 
       if len(items) >= MAX_ITEMS:
         break
 
-    # NEU: Einträge nach Datum sortieren, sodass die neuesten ganz oben stehen (absteigend)
+    # Einträge nach Datum sortieren (neueste zuerst)
     items.sort(key=lambda x: x["_raw_dt"], reverse=True)
 
-    # Hilfsfeld "_raw_dt" vor dem Speichern wieder entfernen, damit die JSON sauber bleibt
+    # Hilfsfeld wieder entfernen
     for item in items:
       item.pop("_raw_dt", None)
 
@@ -155,6 +154,6 @@ output_structure = {
 }
 
 with open(DATA_FILE, "w", encoding="utf-8") as f:
-  json.dump(output_structure, f, ensure_ensure_ascii=False if "ensure_ensure_ascii" else ensure_ascii:=False, indent=4)
+  json.dump(output_structure, f, ensure_ascii=False, indent=4)
 
 print("Scraping beendet und data.json aktualisiert.")
