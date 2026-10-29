@@ -1,7 +1,9 @@
 name: Scrape scnlog
 
 on:
-  workflow_dispatch:       # Lässt sich jederzeit manuell mit einem Klick starten
+  repository_dispatch:
+    types: [run-scraper]
+  workflow_dispatch:       # Lässt sich weiterhin auch manuell mit einem Klick starten
 
 permissions:
   contents: write
