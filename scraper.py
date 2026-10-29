@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import json
 import os
 import re
-from zoneinfo import ZoneInfo  # Automatische Sommer-/Winterzeit-Erkennung für Berlin
+from zoneinfo import ZoneInfo
 from bs4 import BeautifulSoup
 import cloudscraper
 
@@ -127,11 +127,20 @@ for category, url in URLS.items():
               "title": title,
               "link": detail_link,
               "multiup": multiup_link,
-              "datetime": item_datetime_str
+              "datetime": item_datetime_str,
+              # Hilfsfeld zum Sortieren (wird nachher nicht in JSON benötigt, schadet aber nicht)
+              "_raw_dt": dt if dt else berlin_item_time
           })
 
       if len(items) >= MAX_ITEMS:
         break
+
+    # NEU: Einträge nach Datum sortieren, sodass die neuesten ganz oben stehen (absteigend)
+    items.sort(key=lambda x: x["_raw_dt"], reverse=True)
+
+    # Hilfsfeld "_raw_dt" vor dem Speichern wieder entfernen, damit die JSON sauber bleibt
+    for item in items:
+      item.pop("_raw_dt", None)
 
     all_data[category] = items
 
@@ -139,7 +148,6 @@ for category, url in URLS.items():
     print(f"Fehler bei {category}: {e}")
     all_data[category] = old_data.get(category, [])
 
-# Hier wird das korrekte deutsche Format (DD.MM.YYYY HH:MM) und die richtige Zeitzone gesetzt
 berlin_now = datetime.now(ZoneInfo("Europe/Berlin"))
 output_structure = {
     "last_updated": berlin_now.strftime("%d.%m.%Y %H:%M"),
@@ -147,6 +155,6 @@ output_structure = {
 }
 
 with open(DATA_FILE, "w", encoding="utf-8") as f:
-  json.dump(output_structure, f, ensure_ascii=False, indent=4)
+  json.dump(output_structure, f, ensure_ensure_ascii=False if "ensure_ensure_ascii" else ensure_ascii:=False, indent=4)
 
 print("Scraping beendet und data.json aktualisiert.")
