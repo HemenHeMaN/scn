@@ -1,5 +1,5 @@
 {
-    "last_updated": "2026-10-28 23:27",
+    "last_updated": "2026-10-29 03:25",
     "categories": {
         "Are You The One": [],
         "Love Island": [
@@ -17,14 +17,7 @@
             }
         ],
         "CoupleChallenge": [],
-        "Temptation Island": [
-            {
-                "title": "Temptation.Island.VIP.S07E03.GERMAN.1080p.WEB.H264-SunDry",
-                "link": "https://scnlog.me/foreign/temptation-island-vip-s07e03-german-1080p-web-h264-sundry/",
-                "multiup": "https://multiup.io/download/484643544754e520b5eb30c465360f8c/Temptation.Island.VIP.S07E03.GERMAN.1080p.WEB.H264-SunDry.mkv",
-                "datetime": "2026-10-26 13:30"
-            }
-        ],
+        "Temptation Island": [],
         "Sommerhaus": [
             {
                 "title": "Das.Sommerhaus.der.Stars.Kampf.Promipaare.S11E10.GERMAN.1080p.WEB.H264-SunDry",
@@ -33,7 +26,20 @@
                 "datetime": "2026-10-27 01:05"
             }
         ],
-        "Der Promihof": [],
+        "Der Promihof": [
+            {
+                "title": "Der.Promihof.S02E04.GERMAN.1080p.WEB.H264-SunDry",
+                "link": "https://scnlog.me/foreign/der-promihof-s02e04-german-1080p-web-h264-sundry/",
+                "multiup": "https://multiup.io/download/f13751474a1b624ee93a07c5038e280d/Der.Promihof.S02E04.GERMAN.1080p.WEB.H264-SunDry.mkv",
+                "datetime": "2026-10-29 00:25"
+            },
+            {
+                "title": "Der.Promihof.S02E03.GERMAN.1080p.WEB.H264-SunDry",
+                "link": "https://scnlog.me/foreign/der-promihof-s02e03-german-1080p-web-h264-sundry/",
+                "multiup": "https://multiup.io/download/76afb175fde7b9ae44bc7564c2f49585/Der.Promihof.S02E03.GERMAN.1080p.WEB.H264-SunDry.mkv",
+                "datetime": "2026-10-29 00:18"
+            }
+        ],
         "Prominent Getrennt": [],
         "Prominent Verwandt": [],
         "Die Verräter": [],
