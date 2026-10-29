@@ -1,7 +1,8 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 import json
 import os
 import re
+from zoneinfo import ZoneInfo  # Automatische Sommer-/Winterzeit-Erkennung für Berlin
 from bs4 import BeautifulSoup
 import cloudscraper
 
@@ -50,7 +51,7 @@ def parse_scnlog_datetime(date_str, time_str):
   except Exception:
     return None
 
-cutoff_date = datetime.now() - timedelta(days=4)
+cutoff_date = datetime.now() - timedelta(days=2)
 cutoff_date = cutoff_date.replace(hour=0, minute=0, second=0, microsecond=0)
 
 for category, url in URLS.items():
@@ -96,8 +97,8 @@ for category, url in URLS.items():
         if dt and dt < cutoff_date:
           continue
 
-        berlin_item_time = datetime.now(timezone.utc) + timedelta(hours=2)
-        item_datetime_str = dt.strftime("%Y-%m-%d %H:%M") if dt else berlin_item_time.strftime("%Y-%m-%d %H:%M")
+        berlin_item_time = datetime.now(ZoneInfo("Europe/Berlin"))
+        item_datetime_str = dt.strftime("%d.%m.%Y %H:%M") if dt else berlin_item_time.strftime("%d.%m.%Y %H:%M")
 
         download_links = []
         try:
@@ -138,9 +139,10 @@ for category, url in URLS.items():
     print(f"Fehler bei {category}: {e}")
     all_data[category] = old_data.get(category, [])
 
-berlin_now = datetime.now(timezone.utc) + timedelta(hours=2)
+# Hier wird das korrekte deutsche Format (DD.MM.YYYY HH:MM) und die richtige Zeitzone gesetzt
+berlin_now = datetime.now(ZoneInfo("Europe/Berlin"))
 output_structure = {
-    "last_updated": berlin_now.strftime("%Y-%m-%d %H:%M"),
+    "last_updated": berlin_now.strftime("%d.%m.%Y %H:%M"),
     "categories": all_data
 }
 
