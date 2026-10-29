@@ -1,31 +1,6 @@
 {
-    "last_updated": "29.10.2026 13:40",
+    "last_updated": "29.10.2026 13:45",
     "categories": {
-        "Are You The One": [],
-        "Love Island": [
-            {
-                "title": "Love.Island.VIP.S03E14.GERMAN.1080p.WEB.H264-SunDry",
-                "link": "https://scnlog.me/foreign/love-island-vip-s03e14-german-1080p-web-h264-sundry/",
-                "multiup": "https://multiup.io/download/1c5ef61cfb000982f26a08f6b9b5315e/Love.Island.VIP.S03E14.GERMAN.1080p.WEB.H264-SunDry.mkv",
-                "datetime": "28.10.2026 02:53"
-            },
-            {
-                "title": "Love.Island.VIP.S03E13.GERMAN.1080p.WEB.H264-SunDry",
-                "link": "https://scnlog.me/foreign/love-island-vip-s03e13-german-1080p-web-h264-sundry/",
-                "multiup": "https://multiup.io/download/b09875d7c66b502beb7ab315c00bf1d2/Love.Island.VIP.S03E13.GERMAN.1080p.WEB.H264-SunDry.mkv",
-                "datetime": "28.10.2026 02:44"
-            }
-        ],
-        "CoupleChallenge": [],
-        "Temptation Island": [],
-        "Sommerhaus": [
-            {
-                "title": "Das.Sommerhaus.der.Stars.Kampf.Promipaare.S11E10.GERMAN.1080p.WEB.H264-SunDry",
-                "link": "https://scnlog.me/foreign/das-sommerhaus-der-stars-kampf-promipaare-s11e10-german-1080p-web-h264-sundry/",
-                "multiup": "https://multiup.io/download/0be2321427616ae2b389587752360d26/Das.Sommerhaus.der.Stars.Kampf.Promipaare.S11E10.GERMAN.1080p.WEB.H264-SunDry.mkv",
-                "datetime": "27.10.2026 01:05"
-            }
-        ],
         "Der Promihof": [
             {
                 "title": "Der.Promihof.S02E04.GERMAN.1080p.WEB.H264-SunDry",
@@ -40,13 +15,70 @@
                 "datetime": "29.10.2026 00:18"
             }
         ],
+        "Love Island": [
+            {
+                "title": "Love.Island.VIP.S03E14.GERMAN.1080p.WEB.H264-SunDry",
+                "link": "https://scnlog.me/foreign/love-island-vip-s03e14-german-1080p-web-h264-sundry/",
+                "multiup": "https://multiup.io/download/1c5ef61cfb000982f26a08f6b9b5315e/Love.Island.VIP.S03E14.GERMAN.1080p.WEB.H264-SunDry.mkv",
+                "datetime": "28.10.2026 02:53"
+            },
+            {
+                "title": "Love.Island.VIP.S03E13.GERMAN.1080p.WEB.H264-SunDry",
+                "link": "https://scnlog.me/foreign/love-island-vip-s03e13-german-1080p-web-h264-sundry/",
+                "multiup": "https://multiup.io/download/b09875d7c66b502beb7ab315c00bf1d2/Love.Island.VIP.S03E13.GERMAN.1080p.WEB.H264-SunDry.mkv",
+                "datetime": "28.10.2026 02:44"
+            }
+        ],
+        "Sommerhaus": [
+            {
+                "title": "Das.Sommerhaus.der.Stars.Kampf.Promipaare.S11E10.GERMAN.1080p.WEB.H264-SunDry",
+                "link": "https://scnlog.me/foreign/das-sommerhaus-der-stars-kampf-promipaare-s11e10-german-1080p-web-h264-sundry/",
+                "multiup": "https://multiup.io/download/0be2321427616ae2b389587752360d26/Das.Sommerhaus.der.Stars.Kampf.Promipaare.S11E10.GERMAN.1080p.WEB.H264-SunDry.mkv",
+                "datetime": "27.10.2026 01:05"
+            }
+        ],
+        "Temptation Island": [
+            {
+                "title": "Temptation.Island.VIP.S07E03.GERMAN.1080p.WEB.H264-SunDry",
+                "link": "https://scnlog.me/foreign/temptation-island-vip-s07e03-german-1080p-web-h264-sundry/",
+                "multiup": "https://multiup.io/download/484643544754e520b5eb30c465360f8c/Temptation.Island.VIP.S07E03.GERMAN.1080p.WEB.H264-SunDry.mkv",
+                "datetime": "26.10.2026 13:30"
+            }
+        ],
+        "Das Große Promi Büßen": [
+            {
+                "title": "Das.grosse.Promi.Buessen.S05E03.German.1080p.WEB.h264-TVNATiON",
+                "link": "https://scnlog.me/foreign/das-grosse-promi-buessen-s05e03-german-1080p-web-h264-tvnation/",
+                "multiup": "https://multiup.io/download/8c7915084137a44131f95e825cf7aa85/Das.grosse.Promi.Buessen.S05E03.German.1080p.WEB.h264-TVNATiON.mkv",
+                "datetime": "26.10.2026 07:52"
+            },
+            {
+                "title": "Das.grosse.Promi.Buessen.S05E04.German.1080p.WEB.h264-TVNATiON",
+                "link": "https://scnlog.me/foreign/das-grosse-promi-buessen-s05e04-german-1080p-web-h264-tvnation/",
+                "multiup": "https://multiup.io/download/2ad79e097f36aa7f50fd710cb70943b0/Das.grosse.Promi.Buessen.S05E04.German.1080p.WEB.h264-TVNATiON.mkv",
+                "datetime": "26.10.2026 07:45"
+            },
+            {
+                "title": "Das.grosse.Promi.Buessen.S05E01.German.1080p.WEB.h264-TVNATiON",
+                "link": "https://scnlog.me/foreign/das-grosse-promi-buessen-s05e01-german-1080p-web-h264-tvnation/",
+                "multiup": "https://multiup.io/download/678fcbee1f9774c9c38a16ed8f712100/Das.grosse.Promi.Buessen.S05E01.German.1080p.WEB.h264-TVNATiON.mkv",
+                "datetime": "26.10.2026 07:38"
+            },
+            {
+                "title": "Das.grosse.Promi.Buessen.S05E02.German.1080p.WEB.h264-TVNATiON",
+                "link": "https://scnlog.me/foreign/das-grosse-promi-buessen-s05e02-german-1080p-web-h264-tvnation/",
+                "multiup": "https://multiup.io/download/d6bff6216f3306be384690716c7e175f/Das.grosse.Promi.Buessen.S05E02.German.1080p.WEB.h264-TVNATiON.mkv",
+                "datetime": "26.10.2026 07:28"
+            }
+        ],
+        "Are You The One": [],
+        "CoupleChallenge": [],
         "Prominent Getrennt": [],
         "Prominent Verwandt": [],
         "Die Verräter": [],
         "Ich bin ein Star": [],
         "Kampf der Realitystars": [],
         "Lets Dance german": [],
-        "Reality Queens": [],
-        "Das Große Promi Büßen": []
+        "Reality Queens": []
     }
 }
