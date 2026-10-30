@@ -66,7 +66,7 @@
             gap: 8px;
         }
 
-        .btn-theme, .btn-settings {
+        .btn-theme {
             background: var(--card-bg);
             color: var(--text-color);
             border: 1px solid var(--border-color);
@@ -78,113 +78,8 @@
             transition: background 0.2s, border-color 0.2s;
         }
 
-        .btn-theme:hover, .btn-settings:hover {
+        .btn-theme:hover {
             border-color: var(--primary-color);
-        }
-
-        /* Modal / Verwaltungs-Panel für Shows */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 15px;
-        }
-
-        .modal-content {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 500px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-content h3 {
-            margin-top: 0;
-            color: var(--primary-color);
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .form-group label {
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .form-group input {
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background: var(--bg-color);
-            color: var(--text-color);
-        }
-
-        .btn-add {
-            background: #319795;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 6px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .shows-manage-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-height: 200px;
-            overflow-y: auto;
-            border-top: 1px solid var(--border-color);
-            padding-top: 10px;
-        }
-
-        .shows-manage-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--bg-color);
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-        }
-
-        .btn-delete-show {
-            background: #e53e3e;
-            color: white;
-            border: none;
-            padding: 2px 6px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.75rem;
-        }
-
-        .modal-close {
-            background: #4a5568;
-            color: white;
-            border: none;
-            padding: 8px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            text-align: center;
         }
 
         .update-banner {
@@ -354,10 +249,9 @@
 <body>
 
     <header>
-        <div style="width: 90px;"></div>
+        <div style="width: 40px;"></div>
         <h1>Reality TV Release</h1>
         <div class="header-buttons">
-            <button class="btn-settings" onclick="openModal()">⚙️ Shows</button>
             <button class="btn-theme" id="theme-toggle" onclick="toggleTheme()">🌙</button>
         </div>
     </header>
@@ -368,29 +262,8 @@
     
     <div id="content" class="loading">Lade Daten...</div>
 
-    <!-- Modal für Shows-Verwaltung -->
-    <div id="shows-modal" class="modal">
-        <div class="modal-content">
-            <h3>Shows verwalten</h3>
-            <div class="form-group">
-                <label for="new-show-name">Show Name</label>
-                <input type="text" id="new-show-name" placeholder="z.B. Sommerhaus">
-            </div>
-            <div class="form-group">
-                <label for="new-show-url">Such-URL (scnlog.me)</label>
-                <input type="text" id="new-show-url" placeholder="z.B. https://scnlog.me/?s=Sommerhaus">
-            </div>
-            <button class="btn-add" onclick="addNewShow()">Show hinzufügen</button>
-            
-            <h4 style="margin: 10px 0 0 0; font-size: 0.9rem; color: var(--text-color);">Aktuelle Shows:</h4>
-            <ul id="shows-manage-list" class="shows-manage-list"></ul>
-            
-            <button class="modal-close" onclick="closeModal()">Schließen</button>
-        </div>
-    </div>
-
     <script>
-        // Dark Mode
+        // Dark Mode Steuerung
         const currentTheme = localStorage.getItem('theme') || 'light';
         if (currentTheme === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
@@ -411,63 +284,6 @@
             }
         }
 
-        // Modal Steuerung
-        function openModal() {
-            document.getElementById('shows-modal').style.display = 'flex';
-            renderManageList();
-        }
-        function closeModal() {
-            document.getElementById('shows-modal').style.display = 'none';
-        }
-
-        function getStoredShows() {
-            const defaultShows = [
-                {name: "Are You The One", url: "https://scnlog.me/?s=are%20you%20the%20one%20reality"},
-                {name: "Love Island VIP", url: "https://scnlog.me/?s=Love%20island%20vip%20german"},
-                {name: "CoupleChallenge", url: "https://scnlog.me/?s=Couplechallenge"},
-                {name: "Temptation Island VIP", url: "https://scnlog.me/?s=Temptation%20island%20vip%20german"},
-                {name: "Sommerhaus", url: "https://scnlog.me/?s=Sommerhaus"},
-                {name: "Der Promihof", url: "https://scnlog.me/?s=Der%20Promihof"}
-            ];
-            const stored = localStorage.getItem('my_shows');
-            return stored ? JSON.parse(stored) : defaultShows;
-        }
-
-        function renderManageList() {
-            const listEl = document.getElementById('shows-manage-list');
-            const shows = getStoredShows();
-            listEl.innerHTML = '';
-            shows.forEach((show, index) => {
-                listEl.innerHTML += `<li class="shows-manage-item">
-                    <span><strong>${show.name}</strong></span>
-                    <button class="btn-delete-show" onclick="deleteShow(${index})">Löschen</button>
-                </li>`;
-            });
-        }
-
-        function addNewShow() {
-            const name = document.getElementById('new-show-name').value.trim();
-            const url = document.getElementById('new-show-url').value.trim();
-            if(!name || !url) {
-                alert('Bitte Name und URL eingeben!');
-                return;
-            }
-            const shows = getStoredShows();
-            shows.push({name, url});
-            localStorage.setItem('my_shows', JSON.stringify(shows));
-            document.getElementById('new-show-name').value = '';
-            document.getElementById('new-show-url').value = '';
-            renderManageList();
-            alert('Show hinzugefügt!');
-        }
-
-        function deleteShow(index) {
-            const shows = getStoredShows();
-            shows.splice(index, 1);
-            localStorage.setItem('my_shows', JSON.stringify(shows));
-            renderManageList();
-        }
-
         // Kopieren in Zwischenablage
         function copyToClipboard(text, buttonElement) {
             navigator.clipboard.writeText(text).then(() => {
@@ -481,7 +297,7 @@
             });
         }
        
-        // Daten laden und anzeigen
+        // Daten aus der data.json laden und anzeigen
         fetch('data.json?t=' + new Date().getTime())
             .then(response => response.json())
             .then(jsonResponse => {
