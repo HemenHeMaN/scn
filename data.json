@@ -1,6 +1,20 @@
 {
-    "last_updated": "30.10.2026 00:00",
+    "last_updated": "30.10.2026 06:00",
     "categories": {
+        "CoupleChallenge": [
+            {
+                "title": "CoupleChallenge.Das.staerkste.Team.gewinnt.S06E08.GERMAN.1080p.WEB.H264-SunDry",
+                "link": "https://scnlog.me/foreign/couplechallenge-das-staerkste-team-gewinnt-s06e08-german-1080p-web-h264-sundry/",
+                "multiup": "https://multiup.io/download/e6e40a2f1ce20e7c72629e61c70d0ec8/CoupleChallenge.Das.staerkste.Team.gewinnt.S06E08.GERMAN.1080p.WEB.H264-SunDry.mkv",
+                "datetime": "30.10.2026 00:00"
+            },
+            {
+                "title": "CoupleChallenge.Das.staerkste.Team.gewinnt.S06E07.GERMAN.1080p.WEB.H264-SunDry",
+                "link": "https://scnlog.me/foreign/couplechallenge-das-staerkste-team-gewinnt-s06e07-german-1080p-web-h264-sundry/",
+                "multiup": "https://multiup.io/download/53c589e7620f7f675b70c1776f669760/CoupleChallenge.Das.staerkste.Team.gewinnt.S06E07.GERMAN.1080p.WEB.H264-SunDry.mkv",
+                "datetime": "29.10.2026 23:58"
+            }
+        ],
         "Der Promihof": [
             {
                 "title": "Der.Promihof.S02E04.GERMAN.1080p.WEB.H264-SunDry",
@@ -72,7 +86,6 @@
             }
         ],
         "Are You The One": [],
-        "CoupleChallenge": [],
         "Prominent Getrennt": [],
         "Prominent Verwandt": [],
         "Die Verräter": [],
