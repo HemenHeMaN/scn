@@ -340,6 +340,25 @@
             font-size: 1.1rem;
             padding: 40px;
         }
+
+.badge-new {
+    background-color: #ff4757;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+    text-transform: uppercase;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+
+
+
+
+        
     </style>
 </head>
 <body>
@@ -451,6 +470,41 @@
             });
         }
 
+
+// Aktuelles Datum holen (nur Tag, Monat, Jahr)
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+const yesterday = new Date(today);
+yesterday.setDate(yesterday.getDate() - 1);
+
+// Funktion zum Prüfen, ob ein Datum "heute" oder "gestern" ist
+function isNewRelease(datetimeStr) {
+    // datetimeStr hat das Format "DD.MM.YYYY HH:MM"
+    const parts = datetimeStr.split(" ")[0].split(".");
+    const itemDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+    itemDate.setHours(0, 0, 0, 0);
+
+    return itemDate.getTime() >= yesterday.getTime();
+}
+
+// Schleife beim Rendern deiner Items im HTML:
+items.forEach(item => {
+    let badgeHTML = "";
+    
+    // Prüfen ob neu (heute oder gestern)
+    if (isNewRelease(item.datetime)) {
+        badgeHTML = `<span class="badge-new" style="background-color: #ff4757; color: white; padding: 2px 6px; font-size: 10px; border-radius: 4px; margin-left: 8px; font-weight: bold;">NEU</span>`;
+    }
+
+    // HTML-Element für den Eintrag zusammenbauen
+    // badgeHTML wird direkt hinter dem Titel eingefügt:
+    console.log(`Titel: ${item.title} ${badgeHTML} (Datum: ${item.datetime})`);
+});
+
+
+
+        
         // Daten laden und anzeigen
         fetch('data.json?t=' + new Date().getTime())
             .then(response => response.json())
