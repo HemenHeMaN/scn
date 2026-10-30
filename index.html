@@ -266,12 +266,20 @@
             gap: 8px;
         }
 
+        .title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
         a.title-link {
             color: var(--link-color);
             text-decoration: none;
             font-weight: 600;
             font-size: 0.95rem;
             word-break: break-word;
+            flex-grow: 1;
         }
 
         a.title-link:hover {
@@ -323,6 +331,7 @@
             border-radius: 4px;
             letter-spacing: 0.5px;
             text-transform: uppercase;
+            white-space: nowrap;
         }
 
         .error {
@@ -411,7 +420,6 @@
             document.getElementById('shows-modal').style.display = 'none';
         }
 
-        // Lokale Show-Verwaltung über localStorage
         function getStoredShows() {
             const defaultShows = [
                 {name: "Are You The One", url: "https://scnlog.me/?s=are%20you%20the%20one%20reality"},
@@ -450,7 +458,7 @@
             document.getElementById('new-show-name').value = '';
             document.getElementById('new-show-url').value = '';
             renderManageList();
-            alert('Show hinzugefügt! (Vergiss nicht, sie auch in deiner shows.html auf GitHub einzutragen, damit der Scraper sie abruft).');
+            alert('Show hinzugefügt!');
         }
 
         function deleteShow(index) {
@@ -492,10 +500,12 @@
                 container.classList.remove('loading');
 
                 const now = new Date();
-                const todayStr = now.toISOString().split('T')[0];
+                const pad = (n) => String(n).padStart(2, '0');
+                const todayStr = `${pad(now.getDate())}.${pad(now.getMonth() + 1)}.${now.getFullYear()}`;
+                
                 const yesterday = new Date();
                 yesterday.setDate(now.getDate() - 1);
-                const yesterdayStr = yesterday.toISOString().split('T')[0];
+                const yesterdayStr = `${pad(yesterday.getDate())}.${pad(yesterday.getMonth() + 1)}.${yesterday.getFullYear()}`;
 
                 const sortedCategories = Object.entries(data).sort((a, b) => {
                     const itemsA = a[1];
@@ -523,29 +533,27 @@
                                 }
                             }
 
-const liClass = isNew ? 'is-new' : '';
-// Hier definieren wir das Badge explizit für den Titelbereich:
-const badgeHtml = isNew ? '<span class="badge-new" style="margin-left: 8px;">Neu</span>' : '';
-const downloadUrl = item.multiup || item.link;
+                            const liClass = isNew ? 'is-new' : '';
+                            const badgeHtml = isNew ? '<span class="badge-new">Neu</span>' : '';
+                            const downloadUrl = item.multiup || item.link;
 
-html += `<li class="${liClass}">
-    <div class="item-content">
-        <!-- Badge wird jetzt direkt hinter dem Titel angezeigt -->
-        <div>
-            <a class="title-link" href="${item.link}" target="_blank">${item.title}</a>
-            ${badgeHtml}
-        </div>
-        <div class="action-row">
-            <div class="meta-info">
-                <span>📅 ${dateDisplay} Uhr</span>
-            </div>
-            <div class="button-group">
-                <button class="btn-copy" onclick="copyToClipboard('${downloadUrl}', this)">📋 Copy</button>
-                <a class="btn-download" href="${downloadUrl}" target="_blank">📥 Download</a>
-            </div>
-        </div>
-    </div>
-</li>`;
+                            html += `<li class="${liClass}">
+                                <div class="item-content">
+                                    <div class="title-row">
+                                        <a class="title-link" href="${item.link}" target="_blank">${item.title}</a>
+                                        ${badgeHtml}
+                                    </div>
+                                    <div class="action-row">
+                                        <div class="meta-info">
+                                            <span>📅 ${dateDisplay} Uhr</span>
+                                        </div>
+                                        <div class="button-group">
+                                            <button class="btn-copy" onclick="copyToClipboard('${downloadUrl}', this)">📋 Copy</button>
+                                            <a class="btn-download" href="${downloadUrl}" target="_blank">📥 Download</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>`;
                         });
                         html += '</ul>';
                     } else {
