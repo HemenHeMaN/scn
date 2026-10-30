@@ -523,25 +523,29 @@
                                 }
                             }
 
-                            const liClass = isNew ? 'is-new' : '';
-                            const badge = isNew ? '<span class="badge-new">Neu</span>' : '';
-                            const downloadUrl = item.multiup || item.link;
+const liClass = isNew ? 'is-new' : '';
+// Hier definieren wir das Badge explizit für den Titelbereich:
+const badgeHtml = isNew ? '<span class="badge-new" style="margin-left: 8px;">Neu</span>' : '';
+const downloadUrl = item.multiup || item.link;
 
-                            html += `<li class="${liClass}">
-                                <div class="item-content">
-                                    <a class="title-link" href="${item.link}" target="_blank">${item.title}</a>
-                                    <div class="action-row">
-                                        <div class="meta-info">
-                                            ${badge}
-                                            <span>📅 ${dateDisplay} Uhr</span>
-                                        </div>
-                                        <div class="button-group">
-                                            <button class="btn-copy" onclick="copyToClipboard('${downloadUrl}', this)">📋 Copy</button>
-                                            <a class="btn-download" href="${downloadUrl}" target="_blank">📥 Download</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>`;
+html += `<li class="${liClass}">
+    <div class="item-content">
+        <!-- Badge wird jetzt direkt hinter dem Titel angezeigt -->
+        <div>
+            <a class="title-link" href="${item.link}" target="_blank">${item.title}</a>
+            ${badgeHtml}
+        </div>
+        <div class="action-row">
+            <div class="meta-info">
+                <span>📅 ${dateDisplay} Uhr</span>
+            </div>
+            <div class="button-group">
+                <button class="btn-copy" onclick="copyToClipboard('${downloadUrl}', this)">📋 Copy</button>
+                <a class="btn-download" href="${downloadUrl}" target="_blank">📥 Download</a>
+            </div>
+        </div>
+    </div>
+</li>`;
                         });
                         html += '</ul>';
                     } else {
