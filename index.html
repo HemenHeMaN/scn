@@ -340,8 +340,6 @@
             font-size: 1.1rem;
             padding: 40px;
         }
-
-       
     </style>
 </head>
 <body>
@@ -350,6 +348,7 @@
         <div style="width: 90px;"></div>
         <h1>Reality TV Release</h1>
         <div class="header-buttons">
+            <button class="btn-settings" onclick="openModal()">⚙️ Shows</button>
             <button class="btn-theme" id="theme-toggle" onclick="toggleTheme()">🌙</button>
         </div>
     </header>
@@ -359,6 +358,27 @@
     </div>
     
     <div id="content" class="loading">Lade Daten...</div>
+
+    <!-- Modal für Shows-Verwaltung -->
+    <div id="shows-modal" class="modal">
+        <div class="modal-content">
+            <h3>Shows verwalten</h3>
+            <div class="form-group">
+                <label for="new-show-name">Show Name</label>
+                <input type="text" id="new-show-name" placeholder="z.B. Sommerhaus">
+            </div>
+            <div class="form-group">
+                <label for="new-show-url">Such-URL (scnlog.me)</label>
+                <input type="text" id="new-show-url" placeholder="z.B. https://scnlog.me/?s=Sommerhaus">
+            </div>
+            <button class="btn-add" onclick="addNewShow()">Show hinzufügen</button>
+            
+            <h4 style="margin: 10px 0 0 0; font-size: 0.9rem; color: var(--text-color);">Aktuelle Shows:</h4>
+            <ul id="shows-manage-list" class="shows-manage-list"></ul>
+            
+            <button class="modal-close" onclick="closeModal()">Schließen</button>
+        </div>
+    </div>
 
     <script>
         // Dark Mode
@@ -525,7 +545,7 @@
                         });
                         html += '</ul>';
                     } else {
-                        html += '<p style="color: var(--banner-text); font-size: 0.9rem;">Keine aktuellen Einträge (heute/gestern).</p>';
+                        html += '<p style="color: var(--banner-text); font-size: 0.9rem;">Keine aktuellen Einträge.</p>';
                     }
                     
                     div.innerHTML = html;
