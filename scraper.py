@@ -84,7 +84,7 @@ for category, url in URLS.items():
 
       upper_title = title.upper()
 
-      # WICHTIG: Strenger Filter für deutsche Releases (schließt finnische, dänische etc. aus)
+      # Strikter Filter für deutsche Releases (schließt finnische, dänische etc. aus)
       is_german = "GERMAN" in upper_title
       has_marker = any(
           k in upper_title for k in ["S0", "S1", "S2", "STAFFEL", "VIP"]
@@ -160,7 +160,7 @@ for category, url in URLS.items():
       if len(items) >= MAX_ITEMS:
         break
 
-    # Einträge innerhalb der Show nach Datum sortieren (neueste zuerst)
+    # WICHTIG: Einträge innerhalb der Show nach Datum sortieren (neueste ganz nach OBERHALB)
     items.sort(key=lambda x: x["_raw_dt"], reverse=True)
 
     for item in items:
@@ -172,7 +172,7 @@ for category, url in URLS.items():
     print(f"Fehler bei {category}: {e}")
     all_data[category] = old_data.get(category, [])
 
-# Kategorien sortieren: Shows mit Einträgen oben, leere Shows unten
+# Kategorien sortieren: Shows mit aktiven Einträgen oben, leere Shows unten
 sorted_categories = dict(
     sorted(
         all_data.items(),
