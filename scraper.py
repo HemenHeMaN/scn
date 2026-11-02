@@ -23,7 +23,7 @@ if os.path.exists(SHOWS_FILE):
           parts = line.split("|", 1)
           show_name = parts[0].strip()
           show_url = parts[1].strip()
-          # Bereinige veraltete "german"-Zusätze in den Such-URLs für höhere Trefferquote
+          # Bereinige veraltete "german"-Zusätze in den Such-URLs, falls noch vorhanden
           show_url = re.sub(
               r"(%20|\+)?german", "", show_url, flags=re.IGNORECASE
           )
@@ -43,7 +43,7 @@ if os.path.exists(DATA_FILE):
 scraper = cloudscraper.create_scraper()
 all_data = {}
 
-# Erweitertes Datums-Pattern für englische Datumsformate auf scnlog
+# Erweitertes Datums-Pattern für englische Datumsformate auf scnlog (z.B. "November 2nd, 2026")
 months_pattern = r"(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:st|nd|rd|th)?,\s+\d{4}"
 time_pattern = r"\b\d{1,2}:\d{2}\b"
 
@@ -83,16 +83,18 @@ for category, url in URLS.items():
         continue
 
       upper_title = title.upper()
-      # Prüfen ob es sich um ein konkretes Release handelt (S0X, E0X, GERMAN, VIP, etc.)
-      is_release = any(
-          k in upper_title for k in ["S0", "S1", "S2", "STAFFEL", "GERMAN", "VIP"]
+
+      # WICHTIG: Strenger Filter für deutsche Releases (schließt finnische, dänische etc. aus)
+      is_german = "GERMAN" in upper_title
+      has_marker = any(
+          k in upper_title for k in ["S0", "S1", "S2", "STAFFEL", "VIP"]
       )
 
-      if is_release:
+      if is_german and has_marker:
         if detail_link.startswith("/"):
           detail_link = "https://scnlog.me" + detail_link
 
-        # Parent-Container hochgehen, um den Veröffentlichungs-Textblock zu finden
+        # Parent-Container hochgehen, um den Veröffentlichungs-Textblock mit Datum zu finden
         row_container = a
         text_block = ""
         for _ in range(6):
