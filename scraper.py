@@ -23,7 +23,6 @@ if os.path.exists(SHOWS_FILE):
           parts = line.split("|", 1)
           show_name = parts[0].strip()
           show_url = parts[1].strip()
-          # Bereinige veraltete "german"-Zusätze in den Such-URLs, falls noch vorhanden
           show_url = re.sub(
               r"(%20|\+)?german", "", show_url, flags=re.IGNORECASE
           )
@@ -43,7 +42,6 @@ if os.path.exists(DATA_FILE):
 scraper = cloudscraper.create_scraper()
 all_data = {}
 
-# Erweitertes Datums-Pattern für englische Datumsformate auf scnlog (z.B. "November 2nd, 2026")
 months_pattern = r"(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:st|nd|rd|th)?,\s+\d{4}"
 time_pattern = r"\b\d{1,2}:\d{2}\b"
 
@@ -83,8 +81,6 @@ for category, url in URLS.items():
         continue
 
       upper_title = title.upper()
-
-      # Strikter Filter für deutsche Releases (schließt finnische, dänische etc. aus)
       is_german = "GERMAN" in upper_title
       has_marker = any(
           k in upper_title for k in ["S0", "S1", "S2", "STAFFEL", "VIP"]
@@ -94,7 +90,6 @@ for category, url in URLS.items():
         if detail_link.startswith("/"):
           detail_link = "https://scnlog.me" + detail_link
 
-        # Parent-Container hochgehen, um den Veröffentlichungs-Textblock mit Datum zu finden
         row_container = a
         text_block = ""
         for _ in range(6):
@@ -160,7 +155,7 @@ for category, url in URLS.items():
       if len(items) >= MAX_ITEMS:
         break
 
-    # WICHTIG: Einträge innerhalb der Show nach Datum sortieren (neueste ganz nach OBERHALB)
+    # 1. Einträge innerhalb der Show nach Datum sortieren (neueste oben)
     items.sort(key=lambda x: x["_raw_dt"], reverse=True)
 
     for item in items:
@@ -172,15 +167,21 @@ for category, url in URLS.items():
     print(f"Fehler bei {category}: {e}")
     all_data[category] = old_data.get(category, [])
 
-# Kategorien sortieren: Shows mit aktiven Einträgen oben, leere Shows unten
+# 2. KATEGORIEN-SORTIERUNG: Das Neueste (heute) ganz nach oben, ältere nach unten, leere ganz nach unten
 sorted_categories = dict(
     sorted(
         all_data.items(),
         key=lambda item: (
-            len(item[1]) > 0,
-            item[1][0]["datetime"] if len(item[1]) > 0 else "",
+            bool(item[1]),  # Hat die Kategorie überhaupt Einträge? (True vor False)
+            item[1][0]["_raw_dt"]
+            if item[1] and "_raw_dt" in item[1][0]
+            else (
+                datetime.strptime(item[1][0]["datetime"], "%d.%m.%Y %H:%M")
+                if item[1]
+                else datetime(1970, 1, 1)
+            ),  # Fallback auf String-Datum
         ),
-        reverse=True,
+        reverse=True,  # Neuestes Datum / Höchster Wert zuerst!
     )
 )
 
@@ -193,4 +194,4 @@ output_structure = {
 with open(DATA_FILE, "w", encoding="utf-8") as f:
   json.dump(output_structure, f, ensure_ascii=False, indent=4)
 
-print("Scraping beendet und data.json aktualisiert.")
+print("Scraping beendet und data.json perfekt nach Aktualität sortiert.")
