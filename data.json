@@ -1,6 +1,14 @@
 {
-    "last_updated": "04.11.2026 00:00",
+    "last_updated": "04.11.2026 02:24",
     "categories": {
+        "Sommerhaus": [
+            {
+                "title": "Das.Sommerhaus.der.Stars.Kampf.Promipaare.S11E11.GERMAN.1080p.WEB.H264-SunDry",
+                "link": "https://scnlog.me/foreign/das-sommerhaus-der-stars-kampf-promipaare-s11e11-german-1080p-web-h264-sundry/",
+                "multiup": "https://multiup.io/download/69a17a4bcf3964a4a38898636c7cc51e/Das.Sommerhaus.der.Stars.Kampf.Promipaare.S11E11.GERMAN.1080p.WEB.H264-SunDry.mkv",
+                "datetime": "04.11.2026 01:10"
+            }
+        ],
         "Temptation Island": [
             {
                 "title": "Temptation.Island.VIP.S07E04.GERMAN.1080p.WEB.H264-SunDry",
@@ -9,17 +17,9 @@
                 "datetime": "02.11.2026 12:17"
             }
         ],
-        "CoupleChallenge": [
-            {
-                "title": "CoupleChallenge.Das.staerkste.Team.gewinnt.S06E08.GERMAN.1080p.WEB.H264-SunDry",
-                "link": "https://scnlog.me/foreign/couplechallenge-das-staerkste-team-gewinnt-s06e08-german-1080p-web-h264-sundry/",
-                "multiup": "https://multiup.io/download/e6e40a2f1ce20e7c72629e61c70d0ec8/CoupleChallenge.Das.staerkste.Team.gewinnt.S06E08.GERMAN.1080p.WEB.H264-SunDry.mkv",
-                "datetime": "30.10.2026 00:00"
-            }
-        ],
         "Are You The One": [],
         "Love Island": [],
-        "Sommerhaus": [],
+        "CoupleChallenge": [],
         "Der Promihof": [],
         "Prominent Getrennt": [],
         "Prominent Verwandt": [],
