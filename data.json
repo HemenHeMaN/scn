@@ -1,6 +1,20 @@
 {
-    "last_updated": "05.11.2026 01:00",
+    "last_updated": "05.11.2026 07:00",
     "categories": {
+        "Der Promihof": [
+            {
+                "title": "Der.Promihof.S02E06.GERMAN.1080p.WEB.H264-SunDry",
+                "link": "https://scnlog.me/foreign/der-promihof-s02e06-german-1080p-web-h264-sundry/",
+                "multiup": "https://multiup.io/download/95aff09b57a52bd831b9a3e101473d94/Der.Promihof.S02E06.GERMAN.1080p.WEB.H264-SunDry.mkv",
+                "datetime": "05.11.2026 03:32"
+            },
+            {
+                "title": "Der.Promihof.S02E05.GERMAN.1080p.WEB.H264-SunDry",
+                "link": "https://scnlog.me/foreign/der-promihof-s02e05-german-1080p-web-h264-sundry/",
+                "multiup": "https://multiup.io/download/517e75096481033945a7fc09cedccd8f/Der.Promihof.S02E05.GERMAN.1080p.WEB.H264-SunDry.mkv",
+                "datetime": "05.11.2026 03:24"
+            }
+        ],
         "Love Island": [
             {
                 "title": "Love.Island.VIP.S03E15.GERMAN.1080p.WEB.H264-SunDry",
@@ -47,7 +61,6 @@
         ],
         "Are You The One": [],
         "CoupleChallenge": [],
-        "Der Promihof": [],
         "Prominent Getrennt": [],
         "Prominent Verwandt": [],
         "Die Verräter": [],
