@@ -1,6 +1,20 @@
 {
-    "last_updated": "09.11.2026 19:00",
+    "last_updated": "09.11.2026 20:01",
     "categories": {
+        "Das Große Promi Büßen": [
+            {
+                "title": "Das.grosse.Promi.Buessen.S05E07.German.1080p.WEB.h264-TVNATiON",
+                "link": "https://scnlog.me/foreign/das-grosse-promi-buessen-s05e07-german-1080p-web-h264-tvnation/",
+                "multiup": "https://multiup.io/download/1edc4eddd9e81d313bb9ed4cde75fad3/Das.grosse.Promi.Buessen.S05E07.German.1080p.WEB.h264-TVNATiON.mkv",
+                "datetime": "09.11.2026 18:24"
+            },
+            {
+                "title": "Das.grosse.Promi.Buessen.S05E08.German.1080p.WEB.h264-TVNATiON",
+                "link": "https://scnlog.me/foreign/das-grosse-promi-buessen-s05e08-german-1080p-web-h264-tvnation/",
+                "multiup": "https://multiup.io/download/d858f0739ab0aa45a2aacbd2af7c0f6e/Das.grosse.Promi.Buessen.S05E08.German.1080p.WEB.h264-TVNATiON.mkv",
+                "datetime": "09.11.2026 18:16"
+            }
+        ],
         "Temptation Island": [
             {
                 "title": "Temptation.Island.VIP.S07E05.GERMAN.1080p.WEB.H264-SunDry",
@@ -33,7 +47,6 @@
         "Ich bin ein Star": [],
         "Kampf der Realitystars": [],
         "Lets Dance german": [],
-        "Reality Queens": [],
-        "Das Große Promi Büßen": []
+        "Reality Queens": []
     }
 }
