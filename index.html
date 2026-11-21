@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reality TV Release</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a202c">
     <style>
         :root {
             --bg-color: #f4f4f9;
@@ -386,6 +388,14 @@
                 container.classList.remove('loading');
                 container.innerHTML = `<div class="error">Fehler beim Laden der data.json: ${error.message}</div>`;
             });
+
+        // Service Worker registrieren
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .catch(err => console.error('Service Worker Registrierung fehlgeschlagen:', err));
+            });
+        }
     </script>
 
 </body>
