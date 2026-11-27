@@ -1,5 +1,5 @@
 {
-    "last_updated": "27.11.2026 00:00",
+    "last_updated": "27.11.2026 01:00",
     "categories": {
         "Das Große Promi Büßen": [
             {
@@ -23,21 +23,8 @@
                 "datetime": "23.11.2026 01:01"
             }
         ],
-        "Love Island": [
-            {
-                "title": "Love.Island.VIP.S03E19.GERMAN.1080p.WEB.H264-SunDry",
-                "link": "https://scnlog.me/foreign/love-island-vip-s03e19-german-1080p-web-h264-sundry/",
-                "multiup": "https://multiup.io/download/cb81613c1b7a8fa30c9656ca09a9083c/Love.Island.VIP.S03E19.GERMAN.1080p.WEB.H264-SunDry.mkv",
-                "datetime": "22.11.2026 16:35"
-            },
-            {
-                "title": "Love.Island.VIP.S03E20.GERMAN.1080p.WEB.H264-SunDry",
-                "link": "https://scnlog.me/foreign/love-island-vip-s03e20-german-1080p-web-h264-sundry/",
-                "multiup": "https://multiup.io/download/82357505efe171deda3bdb4b2f0245dd/Love.Island.VIP.S03E20.GERMAN.1080p.WEB.H264-SunDry.mkv",
-                "datetime": "22.11.2026 16:02"
-            }
-        ],
         "Are You The One": [],
+        "Love Island": [],
         "CoupleChallenge": [],
         "Temptation Island": [],
         "Sommerhaus": [],
@@ -47,6 +34,7 @@
         "Ich bin ein Star": [],
         "Kampf der Realitystars": [],
         "Lets Dance german": [],
-        "Reality Queens": []
+        "Reality Queens": [],
+        "Forsthaus Rampensau Germany": []
     }
 }
