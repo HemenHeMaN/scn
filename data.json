@@ -1,33 +1,12 @@
 {
-    "last_updated": "28.11.2026 00:00",
+    "last_updated": "28.11.2026 01:00",
     "categories": {
-        "Das Große Promi Büßen": [
-            {
-                "title": "Das.grosse.Promi.Buessen.S05E10.German.1080p.WEB.h264-TVNATiON",
-                "link": "https://scnlog.me/foreign/das-grosse-promi-buessen-s05e10-german-1080p-web-h264-tvnation/",
-                "multiup": "https://multiup.io/download/5d0a97f4a421b3be2b67114c45c1e44d/Das.grosse.Promi.Buessen.S05E10.German.1080p.WEB.h264-TVNATiON.mkv",
-                "datetime": "23.11.2026 09:14"
-            }
-        ],
-        "Der Promihof": [
-            {
-                "title": "Der.Promihof.S02E10.GERMAN.1080p.WEB.H264-SunDry",
-                "link": "https://scnlog.me/foreign/der-promihof-s02e10-german-1080p-web-h264-sundry/",
-                "multiup": "https://multiup.io/download/6e629639db3d1de75028720daddb26af/Der.Promihof.S02E10.GERMAN.1080p.WEB.H264-SunDry.mkv",
-                "datetime": "23.11.2026 01:05"
-            },
-            {
-                "title": "Der.Promihof.S02E09.GERMAN.1080p.WEB.H264-SunDry",
-                "link": "https://scnlog.me/foreign/der-promihof-s02e09-german-1080p-web-h264-sundry/",
-                "multiup": "https://multiup.io/download/bf916a3d127c784fe76a24536af9d9cc/Der.Promihof.S02E09.GERMAN.1080p.WEB.H264-SunDry.mkv",
-                "datetime": "23.11.2026 01:01"
-            }
-        ],
         "Are You The One": [],
         "Love Island": [],
         "CoupleChallenge": [],
         "Temptation Island": [],
         "Sommerhaus": [],
+        "Der Promihof": [],
         "Prominent Getrennt": [],
         "Prominent Verwandt": [],
         "Die Verräter": [],
@@ -35,6 +14,7 @@
         "Kampf der Realitystars": [],
         "Lets Dance german": [],
         "Reality Queens": [],
+        "Das Große Promi Büßen": [],
         "Forsthaus Rampensau Germany": []
     }
 }
